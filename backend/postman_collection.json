@@ -1,0 +1,138 @@
+{
+  "info": {
+    "name": "SleepMate API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/register",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "register"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"name\": \"Test User\",\n\t\"email\": \"test@example.com\",\n\t\"password\": \"password123\",\n\t\"dateOfBirth\": \"1990-01-01\",\n\t\"gender\": \"male\",\n\t\"weight\": 70,\n\t\"height\": 175,\n\t\"healthConditions\": [\"none\"]\n}"
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "login"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"email\": \"test@example.com\",\n\t\"password\": \"password123\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sleep Data",
+      "item": [
+        {
+          "name": "Create Sleep Data",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/sleep-data",
+              "host": ["{{base_url}}"],
+              "path": ["api", "sleep-data"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"date\": \"2025-05-30\",\n\t\"bedTime\": \"2025-05-30T22:00:00.000Z\",\n\t\"wakeUpTime\": \"2025-05-31T06:00:00.000Z\",\n\t\"sleepDuration\": 480,\n\t\"timeToFallAsleep\": 15,\n\t\"interruptionCount\": 1,\n\t\"interruptionTimes\": [\"2025-05-31T03:00:00.000Z\"],\n\t\"sleepQuality\": 8,\n\t\"notes\": \"Good sleep\",\n\t\"environmentalData\": {\n\t\t\"noise\": 20,\n\t\t\"light\": 10,\n\t\t\"temperature\": 22\n\t},\n\t\"dietaryData\": {\n\t\t\"caffeine\": 100,\n\t\t\"alcohol\": 0,\n\t\t\"lastMealTime\": \"2025-05-30T19:00:00.000Z\"\n\t}\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Predictions",
+      "item": [
+        {
+          "name": "Generate Prediction",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/predictions/generate",
+              "host": ["{{base_url}}"],
+              "path": ["api", "predictions", "generate"]
+            }
+          }
+        },
+        {
+          "name": "Get Latest Prediction",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/predictions/latest",
+              "host": ["{{base_url}}"],
+              "path": ["api", "predictions", "latest"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "token",
+      "value": "your_jwt_token_here"
+    }
+  ]
+}
