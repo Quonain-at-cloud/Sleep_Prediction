@@ -1,0 +1,247 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.sleepmodel.sleep_prediction"
+4    android:versionCode="1"
+5    android:versionName="1.0.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="21"
+9        android:targetSdkVersion="35" />
+10    <!--
+11         The INTERNET permission is required for development. Specifically,
+12         the Flutter tool needs it to communicate with the running application
+13         to allow setting breakpoints, to provide hot reload, etc.
+14    -->
+15    <uses-permission android:name="android.permission.INTERNET" />
+15-->D:\Flutter_Apps\sleep_prediction\android\app\src\debug\AndroidManifest.xml:6:5-66
+15-->D:\Flutter_Apps\sleep_prediction\android\app\src\debug\AndroidManifest.xml:6:22-64
+16    <!-- Permissions for environmental data -->
+17    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+17-->D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:3:5-78
+17-->D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:3:22-76
+18    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+18-->D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:4:5-80
+18-->D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:4:22-78
+19    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+19-->D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:5:5-70
+19-->D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:5:22-68
+20    <!--
+21 Required to query activities that can process text, see:
+22         https://developer.android.com/training/package-visibility and
+23         https://developer.android.com/reference/android/content/Intent#ACTION_PROCESS_TEXT.
+24
+25         In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin.
+26    -->
+27    <queries>
+27-->D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:44:5-49:15
+28        <intent>
+28-->D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:45:9-48:18
+29            <action android:name="android.intent.action.PROCESS_TEXT" />
+29-->D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:46:13-72
+29-->D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:46:21-70
+30
+31            <data android:mimeType="text/plain" />
+31-->D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:47:13-50
+31-->D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:47:19-48
+32        </intent>
+33    </queries>
+34
+35    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+35-->[:connectivity_plus] D:\Flutter_Apps\sleep_prediction\build\connectivity_plus\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:7:5-79
+35-->[:connectivity_plus] D:\Flutter_Apps\sleep_prediction\build\connectivity_plus\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:7:22-76
+36
+37    <permission
+37-->[androidx.core:core:1.13.1] C:\Users\quona\.gradle\caches\8.10.2\transforms\8cf478dec41eed746328fa8046755ba2\transformed\core-1.13.1\AndroidManifest.xml:22:5-24:47
+38        android:name="com.sleepmodel.sleep_prediction.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+38-->[androidx.core:core:1.13.1] C:\Users\quona\.gradle\caches\8.10.2\transforms\8cf478dec41eed746328fa8046755ba2\transformed\core-1.13.1\AndroidManifest.xml:23:9-81
+39        android:protectionLevel="signature" />
+39-->[androidx.core:core:1.13.1] C:\Users\quona\.gradle\caches\8.10.2\transforms\8cf478dec41eed746328fa8046755ba2\transformed\core-1.13.1\AndroidManifest.xml:24:9-44
+40
+41    <uses-permission android:name="com.sleepmodel.sleep_prediction.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+41-->[androidx.core:core:1.13.1] C:\Users\quona\.gradle\caches\8.10.2\transforms\8cf478dec41eed746328fa8046755ba2\transformed\core-1.13.1\AndroidManifest.xml:26:5-97
+41-->[androidx.core:core:1.13.1] C:\Users\quona\.gradle\caches\8.10.2\transforms\8cf478dec41eed746328fa8046755ba2\transformed\core-1.13.1\AndroidManifest.xml:26:22-94
+42
+43    <application
+44        android:name="android.app.Application"
+45        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+45-->[androidx.core:core:1.13.1] C:\Users\quona\.gradle\caches\8.10.2\transforms\8cf478dec41eed746328fa8046755ba2\transformed\core-1.13.1\AndroidManifest.xml:28:18-86
+46        android:debuggable="true"
+47        android:extractNativeLibs="true"
+48        android:icon="@mipmap/ic_launcher"
+49        android:label="sleep_prediction" >
+50        <activity
+51            android:name="com.sleepmodel.sleep_prediction.MainActivity"
+52            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+53            android:exported="true"
+54            android:hardwareAccelerated="true"
+55            android:launchMode="singleTop"
+56            android:taskAffinity=""
+57            android:theme="@style/LaunchTheme"
+58            android:windowSoftInputMode="adjustResize" >
+59
+60            <!--
+61                 Specifies an Android theme to apply to this Activity as soon as
+62                 the Android process has started. This theme is visible to the user
+63                 while the Flutter UI initializes. After that, this theme continues
+64                 to determine the Window background behind the Flutter UI.
+65            -->
+66            <meta-data
+67                android:name="io.flutter.embedding.android.NormalTheme"
+68                android:resource="@style/NormalTheme" />
+69
+70            <intent-filter>
+71                <action android:name="android.intent.action.MAIN" />
+72
+73                <category android:name="android.intent.category.LAUNCHER" />
+74            </intent-filter>
+75        </activity>
+76        <!--
+77             Don't delete the meta-data below.
+78             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java
+79        -->
+80        <meta-data
+81            android:name="flutterEmbedding"
+82            android:value="2" />
+83
+84        <service
+84-->[:geolocator_android] D:\Flutter_Apps\sleep_prediction\build\geolocator_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:8:9-12:56
+85            android:name="com.baseflow.geolocator.GeolocatorLocationService"
+85-->[:geolocator_android] D:\Flutter_Apps\sleep_prediction\build\geolocator_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:9:13-77
+86            android:enabled="true"
+86-->[:geolocator_android] D:\Flutter_Apps\sleep_prediction\build\geolocator_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:10:13-35
+87            android:exported="false"
+87-->[:geolocator_android] D:\Flutter_Apps\sleep_prediction\build\geolocator_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:11:13-37
+88            android:foregroundServiceType="location" />
+88-->[:geolocator_android] D:\Flutter_Apps\sleep_prediction\build\geolocator_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:12:13-53
+89
+90        <provider
+90-->[:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:9:9-17:20
+91            android:name="io.flutter.plugins.imagepicker.ImagePickerFileProvider"
+91-->[:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:10:13-82
+92            android:authorities="com.sleepmodel.sleep_prediction.flutter.image_provider"
+92-->[:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:11:13-74
+93            android:exported="false"
+93-->[:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:12:13-37
+94            android:grantUriPermissions="true" >
+94-->[:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:13:13-47
+95            <meta-data
+95-->[:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:14:13-16:75
+96                android:name="android.support.FILE_PROVIDER_PATHS"
+96-->[:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:15:17-67
+97                android:resource="@xml/flutter_image_picker_file_paths" />
+97-->[:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:16:17-72
+98        </provider> <!-- Trigger Google Play services to install the backported photo picker module. -->
+99        <service
+99-->[:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:19:9-31:19
+100            android:name="com.google.android.gms.metadata.ModuleDependencies"
+100-->[:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:20:13-78
+101            android:enabled="false"
+101-->[:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:21:13-36
+102            android:exported="false" >
+102-->[:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:22:13-37
+103            <intent-filter>
+103-->[:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:24:13-26:29
+104                <action android:name="com.google.android.gms.metadata.MODULE_DEPENDENCIES" />
+104-->[:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:25:17-94
+104-->[:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:25:25-91
+105            </intent-filter>
+106
+107            <meta-data
+107-->[:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:28:13-30:36
+108                android:name="photopicker_activity:0:required"
+108-->[:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:29:17-63
+109                android:value="" />
+109-->[:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:30:17-33
+110        </service>
+111
+112        <activity
+112-->[com.google.android.gms:play-services-base:18.3.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\9db9b81a577112600e8d2ee7b5450923\transformed\jetified-play-services-base-18.3.0\AndroidManifest.xml:20:9-22:45
+113            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+113-->[com.google.android.gms:play-services-base:18.3.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\9db9b81a577112600e8d2ee7b5450923\transformed\jetified-play-services-base-18.3.0\AndroidManifest.xml:20:19-85
+114            android:exported="false"
+114-->[com.google.android.gms:play-services-base:18.3.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\9db9b81a577112600e8d2ee7b5450923\transformed\jetified-play-services-base-18.3.0\AndroidManifest.xml:22:19-43
+115            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+115-->[com.google.android.gms:play-services-base:18.3.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\9db9b81a577112600e8d2ee7b5450923\transformed\jetified-play-services-base-18.3.0\AndroidManifest.xml:21:19-78
+116
+117        <meta-data
+117-->[com.google.android.gms:play-services-basement:18.3.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\abeed4f47a72eff8f5b4e9bf7f2f3c91\transformed\jetified-play-services-basement-18.3.0\AndroidManifest.xml:21:9-23:69
+118            android:name="com.google.android.gms.version"
+118-->[com.google.android.gms:play-services-basement:18.3.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\abeed4f47a72eff8f5b4e9bf7f2f3c91\transformed\jetified-play-services-basement-18.3.0\AndroidManifest.xml:22:13-58
+119            android:value="@integer/google_play_services_version" />
+119-->[com.google.android.gms:play-services-basement:18.3.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\abeed4f47a72eff8f5b4e9bf7f2f3c91\transformed\jetified-play-services-basement-18.3.0\AndroidManifest.xml:23:13-66
+120
+121        <uses-library
+121-->[androidx.window:window:1.2.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\5093ab42d2307deb2d7ac0b7f5718c38\transformed\jetified-window-1.2.0\AndroidManifest.xml:23:9-25:40
+122            android:name="androidx.window.extensions"
+122-->[androidx.window:window:1.2.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\5093ab42d2307deb2d7ac0b7f5718c38\transformed\jetified-window-1.2.0\AndroidManifest.xml:24:13-54
+123            android:required="false" />
+123-->[androidx.window:window:1.2.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\5093ab42d2307deb2d7ac0b7f5718c38\transformed\jetified-window-1.2.0\AndroidManifest.xml:25:13-37
+124        <uses-library
+124-->[androidx.window:window:1.2.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\5093ab42d2307deb2d7ac0b7f5718c38\transformed\jetified-window-1.2.0\AndroidManifest.xml:26:9-28:40
+125            android:name="androidx.window.sidecar"
+125-->[androidx.window:window:1.2.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\5093ab42d2307deb2d7ac0b7f5718c38\transformed\jetified-window-1.2.0\AndroidManifest.xml:27:13-51
+126            android:required="false" />
+126-->[androidx.window:window:1.2.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\5093ab42d2307deb2d7ac0b7f5718c38\transformed\jetified-window-1.2.0\AndroidManifest.xml:28:13-37
+127
+128        <provider
+128-->[androidx.lifecycle:lifecycle-process:2.7.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\e80aa748ff6540407d8dba61c0d945fe\transformed\jetified-lifecycle-process-2.7.0\AndroidManifest.xml:24:9-32:20
+129            android:name="androidx.startup.InitializationProvider"
+129-->[androidx.lifecycle:lifecycle-process:2.7.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\e80aa748ff6540407d8dba61c0d945fe\transformed\jetified-lifecycle-process-2.7.0\AndroidManifest.xml:25:13-67
+130            android:authorities="com.sleepmodel.sleep_prediction.androidx-startup"
+130-->[androidx.lifecycle:lifecycle-process:2.7.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\e80aa748ff6540407d8dba61c0d945fe\transformed\jetified-lifecycle-process-2.7.0\AndroidManifest.xml:26:13-68
+131            android:exported="false" >
+131-->[androidx.lifecycle:lifecycle-process:2.7.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\e80aa748ff6540407d8dba61c0d945fe\transformed\jetified-lifecycle-process-2.7.0\AndroidManifest.xml:27:13-37
+132            <meta-data
+132-->[androidx.lifecycle:lifecycle-process:2.7.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\e80aa748ff6540407d8dba61c0d945fe\transformed\jetified-lifecycle-process-2.7.0\AndroidManifest.xml:29:13-31:52
+133                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+133-->[androidx.lifecycle:lifecycle-process:2.7.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\e80aa748ff6540407d8dba61c0d945fe\transformed\jetified-lifecycle-process-2.7.0\AndroidManifest.xml:30:17-78
+134                android:value="androidx.startup" />
+134-->[androidx.lifecycle:lifecycle-process:2.7.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\e80aa748ff6540407d8dba61c0d945fe\transformed\jetified-lifecycle-process-2.7.0\AndroidManifest.xml:31:17-49
+135            <meta-data
+135-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\quona\.gradle\caches\8.10.2\transforms\5f7dcf6815bacc3ae7f099ba801348de\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:29:13-31:52
+136                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+136-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\quona\.gradle\caches\8.10.2\transforms\5f7dcf6815bacc3ae7f099ba801348de\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:30:17-85
+137                android:value="androidx.startup" />
+137-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\quona\.gradle\caches\8.10.2\transforms\5f7dcf6815bacc3ae7f099ba801348de\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:31:17-49
+138        </provider>
+139
+140        <receiver
+140-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\quona\.gradle\caches\8.10.2\transforms\5f7dcf6815bacc3ae7f099ba801348de\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:34:9-52:20
+141            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+141-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\quona\.gradle\caches\8.10.2\transforms\5f7dcf6815bacc3ae7f099ba801348de\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:35:13-76
+142            android:directBootAware="false"
+142-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\quona\.gradle\caches\8.10.2\transforms\5f7dcf6815bacc3ae7f099ba801348de\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:36:13-44
+143            android:enabled="true"
+143-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\quona\.gradle\caches\8.10.2\transforms\5f7dcf6815bacc3ae7f099ba801348de\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:37:13-35
+144            android:exported="true"
+144-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\quona\.gradle\caches\8.10.2\transforms\5f7dcf6815bacc3ae7f099ba801348de\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:38:13-36
+145            android:permission="android.permission.DUMP" >
+145-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\quona\.gradle\caches\8.10.2\transforms\5f7dcf6815bacc3ae7f099ba801348de\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:39:13-57
+146            <intent-filter>
+146-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\quona\.gradle\caches\8.10.2\transforms\5f7dcf6815bacc3ae7f099ba801348de\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:40:13-42:29
+147                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+147-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\quona\.gradle\caches\8.10.2\transforms\5f7dcf6815bacc3ae7f099ba801348de\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:41:17-91
+147-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\quona\.gradle\caches\8.10.2\transforms\5f7dcf6815bacc3ae7f099ba801348de\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:41:25-88
+148            </intent-filter>
+149            <intent-filter>
+149-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\quona\.gradle\caches\8.10.2\transforms\5f7dcf6815bacc3ae7f099ba801348de\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:43:13-45:29
+150                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+150-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\quona\.gradle\caches\8.10.2\transforms\5f7dcf6815bacc3ae7f099ba801348de\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:44:17-85
+150-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\quona\.gradle\caches\8.10.2\transforms\5f7dcf6815bacc3ae7f099ba801348de\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:44:25-82
+151            </intent-filter>
+152            <intent-filter>
+152-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\quona\.gradle\caches\8.10.2\transforms\5f7dcf6815bacc3ae7f099ba801348de\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:46:13-48:29
+153                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+153-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\quona\.gradle\caches\8.10.2\transforms\5f7dcf6815bacc3ae7f099ba801348de\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:47:17-88
+153-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\quona\.gradle\caches\8.10.2\transforms\5f7dcf6815bacc3ae7f099ba801348de\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:47:25-85
+154            </intent-filter>
+155            <intent-filter>
+155-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\quona\.gradle\caches\8.10.2\transforms\5f7dcf6815bacc3ae7f099ba801348de\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:49:13-51:29
+156                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+156-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\quona\.gradle\caches\8.10.2\transforms\5f7dcf6815bacc3ae7f099ba801348de\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:50:17-95
+156-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\quona\.gradle\caches\8.10.2\transforms\5f7dcf6815bacc3ae7f099ba801348de\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:50:25-92
+157            </intent-filter>
+158        </receiver>
+159    </application>
+160
+161</manifest>

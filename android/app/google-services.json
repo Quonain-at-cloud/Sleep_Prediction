@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "585912533994",
+    "project_id": "sleep-prediction-e251b",
+    "storage_bucket": "sleep-prediction-e251b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:585912533994:android:065084d50d692eed76a893",
+        "android_client_info": {
+          "package_name": "com.sleepmodel.sleep_prediction"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCv4SZWygSd_PHkfFK6DfO0YWS_nTJyx5o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
