@@ -23,7 +23,6 @@ import 'services/cache_service.dart';
 import 'services/logger_service.dart';
 import 'services/notification_service.dart';
 import 'background/notification_fetcher.dart';
-import 'package:background_fetch/background_fetch.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'models/notification_model.dart';
 import 'providers/notification_provider.dart';
@@ -80,9 +79,7 @@ class ErrorScreen extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   // Try to restart the app
-                  // Register Android headless task before restarting
-                   BackgroundFetch.registerHeadlessTask(NotificationBackgroundFetcher.backgroundFetchHeadlessTask);
-                   main();
+                  main();
                 },
                 child: Text('Retry'),
               ),

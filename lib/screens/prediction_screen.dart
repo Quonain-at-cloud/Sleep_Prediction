@@ -665,7 +665,7 @@ class _PredictionScreenState extends State<PredictionScreen> {
                                   color: const Color(0xFF31244C),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
-                                constraints: const BoxConstraints(maxHeight: 400),
+                                constraints: const BoxConstraints(maxHeight: 300),
                                 child: SingleChildScrollView(
                                   child: (_predictionText == null || _predictionText!.isEmpty)
                                       ? const Text(
@@ -690,7 +690,7 @@ class _PredictionScreenState extends State<PredictionScreen> {
                                 ),
                               ),
                               
-                              const SizedBox(height: 30),
+                              const SizedBox(height: 20),
                               // Additional content can go here
                               const Padding(
                                 padding: EdgeInsets.symmetric(vertical: 20),

@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:background_fetch/background_fetch.dart';
+import 'package:workmanager/workmanager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,49 +16,33 @@ import 'package:hive/hive.dart';
 /// them like real push-notifications – no Firebase required.
 class NotificationBackgroundFetcher {
   static const String _prefsLastFetchKey = 'last_notification_fetch';
+  static const String fetchTaskName = 'notificationFetchTask';
 
-  /// Registers & configures [background_fetch]. Must be called **early** in
+  /// Registers & configures [workmanager]. Must be called **early** in
   /// `main()` *before* [runApp].
   static Future<void> initialize() async {
-    // background_fetch is not supported on Flutter Web.
     if (kIsWeb) return;
-    // iOS/Android config
-    await BackgroundFetch.configure(
-      BackgroundFetchConfig(
-        minimumFetchInterval: 15, // minutes
-        stopOnTerminate: false,
-        enableHeadless: true,
-        startOnBoot: true,
-        requiredNetworkType: NetworkType.ANY,
+    await Workmanager().initialize(
+      callbackDispatcher,
+      isInDebugMode: false,
+    );
+    await Workmanager().registerPeriodicTask(
+      fetchTaskName,
+      fetchTaskName,
+      frequency: Duration(minutes: 15),
+      initialDelay: Duration(seconds: 10),
+      constraints: Constraints(
+        networkType: NetworkType.connected,
       ),
-      _onFetch,
-      _onTimeout,
     );
   }
 
-  /// Background callback when app is *running* (foreground / background).
-  static Future<void> _onFetch(String taskId) async {
-    await _performFetch();
-    BackgroundFetch.finish(taskId);
-  }
-
-  /// Background callback when fetch times out (very rare).
-  static void _onTimeout(String taskId) {
-    LoggerService().w('BackgroundFetch timeout: $taskId');
-    BackgroundFetch.finish(taskId);
-  }
-
-  /// Android *headless* entry-point when the app is terminated.
-  /// On Android (when the app is *terminated*) this callback is invoked.
-  /// On other platforms (including Web) the function exits immediately.
-  static Future<void> backgroundFetchHeadlessTask(dynamic task) async {
-    if (kIsWeb) return;
-    if (task.timeout) {
-      BackgroundFetch.finish(task.taskId);
-      return;
-    }
-    await _performFetch();
-    BackgroundFetch.finish(task.taskId);
+  /// The callback dispatcher for workmanager.
+  static void callbackDispatcher() {
+    Workmanager().executeTask((task, inputData) async {
+      await _performFetch();
+      return Future.value(true);
+    });
   }
 
   /// Core logic: fetch new notifications from backend, store and show.
