@@ -5,8 +5,10 @@ import '../services/socket_service.dart';
 import '../services/auth_service.dart';
 import '../config/api_config.dart';
 import '../services/logger_service.dart';
+import '../services/notification_service.dart';
 
 class NotificationProvider with ChangeNotifier {
+  final NotificationService _notificationService = NotificationService();
   final SocketService _socketService;
   final AuthService _authService;
   final LoggerService _logger = LoggerService();
@@ -81,26 +83,24 @@ class NotificationProvider with ChangeNotifier {
       
       await _socketService.init(wsUrl);
       
-      _socketService.on('new_notification', (data) {
-        _logger.i('NotificationProvider: Received notification: $data');
-        if (data is Map) {
-          final notif = NotificationModel.fromJson(Map<String, dynamic>.from(data));
-          
-          _logger.i('NotificationProvider: Parsed notification for user: ${notif.userId}, current user: $_currentUserId');
-          
-          // Only add notification if it's for the current user
-          if (notif.userId == _currentUserId) {
-            _logger.i('NotificationProvider: Adding notification for current user');
-            _addNotification(notif);
-          } else {
-            _logger.w('NotificationProvider: Ignoring notification for different user');
-          }
-        }
-      });
+      // Listen for general and schedule notifications
+      for (final event in ['new_notification', 'schedule_reminder']) {
+        _socketService.on(event, _handleIncomingNotification);
+      }
       
       _logger.i('NotificationProvider: Socket listener set up successfully');
     } catch (e) {
       _logger.e('NotificationProvider: Failed to set up socket listener', e);
+    }
+  }
+
+  void _handleIncomingNotification(dynamic data) {
+    _logger.i('NotificationProvider: Received notification: $data');
+    if (data is Map) {
+      final notif = NotificationModel.fromJson(Map<String, dynamic>.from(data));
+      if (notif.userId == _currentUserId) {
+        _addNotification(notif);
+      }
     }
   }
 
@@ -116,6 +116,8 @@ class NotificationProvider with ChangeNotifier {
       await box.add(notification);
       _notifications.insert(0, notification);
       _logger.i('NotificationProvider: Added notification: ${notification.title}');
+      // Trigger OS level local notification
+      await _notificationService.show(title: notification.title, body: notification.message);
       notifyListeners();
     } catch (e) {
       _logger.e('NotificationProvider: Failed to add notification', e);

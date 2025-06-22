@@ -24,6 +24,28 @@ const scheduleSchema = new mongoose.Schema(
     endTime: {
       type: Date,
     },
+    category: {
+      type: String,
+      enum: ['breakfast','lunch','dinner','snack','sleepStart','wakeUp','exercise','other'],
+      default: 'other',
+    },
+    completed: {
+      type: Boolean,
+      default: false,
+    },
+    reminderSent: {
+      type: Boolean,
+      default: false,
+    },
+    nutrients: {
+      calories: Number,
+      carbs: Number,
+      proteins: Number,
+      fats: Number,
+    },
+    color: {
+      type: String,
+    },
   },
   {
     timestamps: true, // adds createdAt & updatedAt automatically
@@ -32,5 +54,6 @@ const scheduleSchema = new mongoose.Schema(
 
 // Enable efficient queries per-user and per-startTime
 scheduleSchema.index({ userId: 1, startTime: -1 });
+scheduleSchema.index({ completed: 1, reminderSent: 1, startTime: 1 });
 
 module.exports = mongoose.model('Schedule', scheduleSchema);

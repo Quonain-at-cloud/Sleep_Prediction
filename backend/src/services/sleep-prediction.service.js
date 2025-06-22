@@ -400,7 +400,15 @@ class SleepPredictionService {
             }
         }
 
-        // 3. Environmental Factors
+        // 3. Night Awakenings
+        const nightAwakenings = this.safeGet(data, 'Awakenings During Night');
+        if (nightAwakenings !== null && nightAwakenings > 3) {
+            recommendations.push(`You wake up about ${nightAwakenings} times per night. Consider limiting evening fluids, reducing noise/light, and practicing relaxation before bed to minimize interruptions.`);
+        } else if (nightAwakenings !== null && nightAwakenings === 0) {
+            positiveReinforcements.push("Great job staying asleep throughout the night!");
+        }
+
+        // 4. Environmental Factors
         const temp = this.safeGet(data, 'Temperature');
         if (temp !== null && temp > 32) {
             recommendations.push(`Your room is very hot (${temp}°C)! This can severely disrupt sleep. Aim for a cool 16-20°C.`);
@@ -446,6 +454,20 @@ class SleepPredictionService {
             positiveReinforcements.push("Good job on relaxing before sleep!");
         }
 
+        // 6-bis. Stress-specific recommendations
+        const stressLvl = this.getStressLevel(data);
+        if (stressLvl !== null) {
+            if (stressLvl <= 2) {
+                positiveReinforcements.push("Great job keeping your stress low before bedtime!");
+            } else if (stressLvl === 3) {
+                recommendations.push("Your stress level is moderate (3/5). Light relaxation practices like breathing exercises could improve sleep.");
+            } else if (stressLvl === 4) {
+                recommendations.push("Your stress level is high (4/5). Consider structured stress-reduction techniques such as meditation or journaling before bed.");
+            } else if (stressLvl === 5) {
+                recommendations.push("Your stress level is very high (5/5). Strongly consider mindfulness, progressive muscle relaxation, or consulting a professional.");
+            }
+        }
+
         // 6. Diet
         const dinnerHour = this.safeGet(data, 'Dinner Time Hour');
         if (dinnerHour !== null && dinnerHour >= 21) {
@@ -458,7 +480,63 @@ class SleepPredictionService {
 
     // Calculate contributing factors
     calculateContributingFactors(data) {
-        // List all possible factors
+        // Five normalized contributing factors between 0 and 1
+        const factors = {
+            'Night Awakenings': 0,
+            'Temperature': 0,
+            'Noise': 0,
+            'Light Intensity': 0,
+            'Dietary Variety': 0,
+        };
+
+        // 1. Night Awakenings – worst if ≥5
+        const awakenings = this.safeGet(data, 'Awakenings During Night');
+        if (awakenings !== null) {
+            factors['Night Awakenings'] = Math.min(1, awakenings / 5);
+        }
+
+        // 2. Temperature – deviation from optimal 19 °C, worst when |Δ| ≥10 °C
+        const temp = this.safeGet(data, 'Temperature');
+        if (temp !== null) {
+            factors['Temperature'] = Math.min(1, Math.abs(temp - 19) / 10);
+        }
+
+        // 3. Noise – prefer dB value, else textual exposure
+        const noiseDb = this.safeGet(data, 'Noise Level');
+        const soundExposure = this.safeGet(data, 'Sound Exposure');
+        if (noiseDb !== null) {
+            factors['Noise'] = Math.min(1, noiseDb / 80); // 80 dB is very loud
+        } else if (typeof soundExposure === 'string') {
+            const s = soundExposure.toLowerCase();
+            if (s.includes('loud')) factors['Noise'] = 0.8;
+            else if (s.includes('moderate')) factors['Noise'] = 0.5;
+            else factors['Noise'] = 0.1;
+        }
+
+        // 4. Light Intensity (lux) – 50-300 range
+        const lux = this.safeGet(data, 'Light Intensity');
+        if (lux !== null) {
+            factors['Light Intensity'] = lux < 50 ? 0 : Math.min(1, (lux - 50) / 250);
+        }
+
+        // 5. Dietary Variety – monotony increases factor
+        const mealTypes = [];
+        ['Breakfast Food Type', 'Lunch Food Type', 'Dinner Food Type'].forEach(k => {
+            const v = this.safeGet(data, k);
+            if (v) mealTypes.push(v);
+        });
+        if (mealTypes.length === 3) {
+            const uniqueCnt = new Set(mealTypes).size; // 1 (monotonous) .. 3 (varied)
+            factors['Dietary Variety'] = (3 - uniqueCnt) / 2; // 1 when all same, 0 when all different
+        }
+
+        return factors;
+    }
+        /* LEGACY FACTOR BLOCK START -- commented out to avoid duplicate code
+        /* LEGACY BLOCK START
+        /*
+        /*
+// List all possible factors
         const allFactors = [
             'Night Awakenings',
             'Device Use',
@@ -476,6 +554,10 @@ class SleepPredictionService {
         allFactors.forEach(f => { factors[f] = 0; });
 
         // Night Awakenings
+        const awakeningsCount = this.safeGet(data, 'Awakenings During Night');
+        if (awakeningsCount !== null && awakeningsCount > 0) {
+            analysisParts.push(`You woke up ${awakeningsCount} times during the night, which can fragment sleep.`);
+        }
         const awakenings = this.safeGet(data, 'Awakenings During Night');
         if (awakenings !== null && awakenings > 0) {
             factors['Night Awakenings'] = awakenings;
@@ -513,11 +595,12 @@ class SleepPredictionService {
             }
         }
 
-        // Stress Level
+        // Stress Level – always include a scaled factor (0-1 across levels 1-5)
         const stress = this.getStressLevel(data);
         const clampedStress = stress !== null ? Math.max(1, Math.min(5, stress)) : null;
-        if (clampedStress !== null && clampedStress > 3) {
-            factors['High Stress'] = (clampedStress - 3) * 0.25;
+        if (clampedStress !== null) {
+            // Scale: 1 → 0, 5 → 1   (each step adds 0.25)
+            factors['Stress Level'] = (clampedStress - 1) * 0.25;
         }
 
         // Relaxation Level
@@ -544,6 +627,7 @@ class SleepPredictionService {
 
         return factors;
     }
+*/
 
     // Main analysis method
     analyzeSleepData(data) {

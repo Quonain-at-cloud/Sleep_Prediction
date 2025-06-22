@@ -14,6 +14,7 @@ const scheduleRoutes = require('./routes/schedule.routes');
 // WebSocket
 const http = require('http');
 const socket = require('./utils/socket');
+const scheduleReminder = require('./utils/schedule-reminder');
 
 // Initialize express app
 const app = express();
@@ -21,6 +22,8 @@ const app = express();
 // Create HTTP server and initialize Socket.IO
 const server = http.createServer(app);
 socket.init(server);
+// Start cron jobs for schedule reminders
+scheduleReminder.start();
 
 // Path module for file paths
 const path = require('path');

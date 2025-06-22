@@ -1,4 +1,5 @@
 const socket = require('../utils/socket');
+const Notification = require('../models/notification.model');
 
 /**
  * Handle incoming notification payloads (from ML service or other sources)
@@ -12,7 +13,7 @@ const socket = require('../utils/socket');
  *   targetType?: 'user' | 'all' // Optional: defaults to 'user' if userId provided, 'all' otherwise
  * }
  */
-exports.sendNotification = (req, res) => {
+exports.sendNotification = async (req, res) => {
   const { title, message, timestamp, userId, targetType } = req.body || {};
 
   if (!title || !message) {
@@ -42,6 +43,9 @@ exports.sendNotification = (req, res) => {
       console.log('Notification sent to all users:', payload.title);
     }
     
+    // Persist to DB
+    await Notification.create(payload);
+
     return res.status(200).json({ 
       success: true, 
       notification: payload,
@@ -58,7 +62,7 @@ exports.sendNotification = (req, res) => {
  * Expected body: { title: string, message: string, timestamp?: string }
  * User ID is extracted from the authenticated request
  */
-exports.sendUserNotification = (req, res) => {
+exports.sendUserNotification = async (req, res) => {
   const { title, message, timestamp } = req.body || {};
 
   if (!title || !message) {
@@ -77,6 +81,9 @@ exports.sendUserNotification = (req, res) => {
     socket.sendToUser(userId, payload);
     console.log(`Notification sent to user ${userId}:`, payload.title);
     
+    // Persist to DB
+    await Notification.create(payload);
+
     return res.status(200).json({ 
       success: true, 
       notification: payload 
@@ -91,6 +98,16 @@ exports.sendUserNotification = (req, res) => {
  * Test endpoint to manually trigger a notification for the authenticated user
  * Useful for debugging notification system
  */
+/**
+ * Fetch latest notifications for authenticated user after optional ?since param
+ */
+exports.getLatestNotifications = async (req, res) => {
+  const since = req.query.since ? new Date(req.query.since) : new Date(0);
+  const userId = req.user._id;
+  const notifications = await Notification.find({ userId, timestamp: { $gt: since } }).sort({ timestamp: 1 });
+  return res.json({ notifications });
+};
+
 exports.testNotification = (req, res) => {
   const userId = req.user._id.toString();
   const payload = {

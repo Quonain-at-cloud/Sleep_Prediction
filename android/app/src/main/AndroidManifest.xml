@@ -3,6 +3,11 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <!-- For Android 13+ runtime notification permission -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <!-- For background fetch plugin -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
     <application
         android:label="sleep_prediction"
@@ -35,6 +40,10 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+            <!-- BackgroundFetch Headless -->
+        <receiver android:name="com.transistorsoft.flutter.backgroundfetch.HeadlessTask"
+                  android:enabled="true"
+                  android:exported="false"/>
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

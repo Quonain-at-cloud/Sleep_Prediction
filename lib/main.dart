@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -20,6 +21,9 @@ import 'services/api_service.dart';
 import 'services/auth_service.dart';
 import 'services/cache_service.dart';
 import 'services/logger_service.dart';
+import 'services/notification_service.dart';
+import 'background/notification_fetcher.dart';
+import 'package:background_fetch/background_fetch.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'models/notification_model.dart';
 import 'providers/notification_provider.dart';
@@ -76,7 +80,9 @@ class ErrorScreen extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   // Try to restart the app
-                  main();
+                  // Register Android headless task before restarting
+                   BackgroundFetch.registerHeadlessTask(NotificationBackgroundFetcher.backgroundFetchHeadlessTask);
+                   main();
                 },
                 child: Text('Retry'),
               ),
@@ -100,7 +106,9 @@ Future<void> initializeApp() async {
 
     // Initialize local storage (Hive)
     await Hive.initFlutter();
-    Hive.registerAdapter(NotificationModelAdapter());
+    if (!Hive.isAdapterRegistered(18)) {
+      Hive.registerAdapter(NotificationModelAdapter());
+    }
 
     // Initialize service locator and services
     await setupServiceLocator();
@@ -108,6 +116,14 @@ Future<void> initializeApp() async {
     // Initialize date formatting for 'en_US' locale (and default)
     await initializeDateFormatting('en_US', null);
     await initializeDateFormatting(null, null); // For default device locale if needed
+
+    // Initialize local notification service (no Firebase required)
+    await NotificationService().init();
+
+    // Configure periodic background fetch (mobile only)
+    if (!kIsWeb) {
+      await NotificationBackgroundFetcher.initialize();
+    }
     
     // Set up BlocObserver for state management monitoring
     Bloc.observer = AppBlocObserver();

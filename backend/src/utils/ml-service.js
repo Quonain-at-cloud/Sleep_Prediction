@@ -11,19 +11,64 @@ function mapSleepDataToMLInput(sleepData = {}, environmentalData = {}, dietaryDa
   if ('Age' in sleepData) mappedData['Age'] = sleepData.Age;
   if ('Gender' in sleepData) mappedData['Gender'] = sleepData.Gender;
   if ('BMI Category' in sleepData) mappedData['BMI Category'] = sleepData['BMI Category'];
-  if ('weekdayBedtimeHour' in sleepData) mappedData['Weekday Bedtime Hour'] = sleepData.weekdayBedtimeHour;
-  if ('weekdayBedtimeMinute' in sleepData) mappedData['Weekday Bedtime Minute'] = sleepData.weekdayBedtimeMinute;
-  if ('weekdayWakeUpHour' in sleepData) mappedData['Weekday Wake-up Hour'] = sleepData.weekdayWakeUpHour;
-  if ('weekdayWakeUpMinute' in sleepData) mappedData['Weekday Wake-up Minute'] = sleepData.weekdayWakeUpMinute;
-  if ('weekendBedtimeHour' in sleepData) mappedData['Weekend Bedtime Hour'] = sleepData.weekendBedtimeHour;
-  if ('weekendBedtimeMinute' in sleepData) mappedData['Weekend Bedtime Minute'] = sleepData.weekendBedtimeMinute;
-  if ('weekendWakeUpHour' in sleepData) mappedData['Weekend Wake-up Hour'] = sleepData.weekendWakeUpHour;
-  if ('weekendWakeUpMinute' in sleepData) mappedData['Weekend Wake-up Minute'] = sleepData.weekendWakeUpMinute;
-  if ('awakeningsDuringNight' in sleepData) mappedData['Awakenings During Night'] = Number(sleepData.awakeningsDuringNight);
-  else if ('awakenings' in sleepData) mappedData['Awakenings During Night'] = Number(sleepData.awakenings);
+  if ('weekdayBedtimeHour' in sleepData) {
+    mappedData['Weekday Bedtime Hour'] = sleepData.weekdayBedtimeHour;
+  } else if ('Weekday Bedtime Hour' in sleepData) {
+    mappedData['Weekday Bedtime Hour'] = sleepData['Weekday Bedtime Hour'];
+  }
+  if ('weekdayBedtimeMinute' in sleepData) {
+    mappedData['Weekday Bedtime Minute'] = sleepData.weekdayBedtimeMinute;
+  } else if ('Weekday Bedtime Minute' in sleepData) {
+    mappedData['Weekday Bedtime Minute'] = sleepData['Weekday Bedtime Minute'];
+  }
+  if ('weekdayWakeUpHour' in sleepData) {
+    mappedData['Weekday Wake-up Hour'] = sleepData.weekdayWakeUpHour;
+  } else if ('Weekday Wake-up Hour' in sleepData) {
+    mappedData['Weekday Wake-up Hour'] = sleepData['Weekday Wake-up Hour'];
+  }
+  if ('weekdayWakeUpMinute' in sleepData) {
+    mappedData['Weekday Wake-up Minute'] = sleepData.weekdayWakeUpMinute;
+  } else if ('Weekday Wake-up Minute' in sleepData) {
+    mappedData['Weekday Wake-up Minute'] = sleepData['Weekday Wake-up Minute'];
+  }
+  if ('weekendBedtimeHour' in sleepData) {
+    mappedData['Weekend Bedtime Hour'] = sleepData.weekendBedtimeHour;
+  } else if ('Weekend Bedtime Hour' in sleepData) {
+    mappedData['Weekend Bedtime Hour'] = sleepData['Weekend Bedtime Hour'];
+  }
+  if ('weekendBedtimeMinute' in sleepData) {
+    mappedData['Weekend Bedtime Minute'] = sleepData.weekendBedtimeMinute;
+  } else if ('Weekend Bedtime Minute' in sleepData) {
+    mappedData['Weekend Bedtime Minute'] = sleepData['Weekend Bedtime Minute'];
+  }
+  if ('weekendWakeUpHour' in sleepData) {
+    mappedData['Weekend Wake-up Hour'] = sleepData.weekendWakeUpHour;
+  } else if ('Weekend Wake-up Hour' in sleepData) {
+    mappedData['Weekend Wake-up Hour'] = sleepData['Weekend Wake-up Hour'];
+  }
+  if ('weekendWakeUpMinute' in sleepData) {
+    mappedData['Weekend Wake-up Minute'] = sleepData.weekendWakeUpMinute;
+  } else if ('Weekend Wake-up Minute' in sleepData) {
+    mappedData['Weekend Wake-up Minute'] = sleepData['Weekend Wake-up Minute'];
+  }
+  if ('awakeningsDuringNight' in sleepData) {
+    mappedData['Awakenings During Night'] = Number(sleepData.awakeningsDuringNight);
+  } else if ('awakenings' in sleepData) {
+    mappedData['Awakenings During Night'] = Number(sleepData.awakenings);
+  } else if ('Awakenings During Night' in sleepData) {
+    mappedData['Awakenings During Night'] = Number(sleepData['Awakenings During Night']);
+  }
   if ('rateSleepQuality' in sleepData) mappedData['Rate Sleep Quality'] = sleepData.rateSleepQuality;
-  if ('useElectronicDevicesBeforeBed' in sleepData) mappedData['Use Electronic Devices Before Bed'] = sleepData.useElectronicDevicesBeforeBed;
-  if ('howRelaxedBeforeSleep' in sleepData) mappedData['How Relaxed Before Sleep'] = sleepData.howRelaxedBeforeSleep;
+  if ('useElectronicDevicesBeforeBed' in sleepData) {
+    mappedData['Use Electronic Devices Before Bed'] = sleepData.useElectronicDevicesBeforeBed;
+  } else if ('Use Electronic Devices Before Bed' in sleepData) {
+    mappedData['Use Electronic Devices Before Bed'] = sleepData['Use Electronic Devices Before Bed'];
+  }
+  if ('howRelaxedBeforeSleep' in sleepData) {
+    mappedData['How Relaxed Before Sleep'] = sleepData.howRelaxedBeforeSleep;
+  } else if ('How Relaxed Before Sleep' in sleepData) {
+    mappedData['How Relaxed Before Sleep'] = sleepData['How Relaxed Before Sleep'];
+  }
   if ('Sleep Duration' in sleepData) mappedData['Sleep Duration'] = sleepData['Sleep Duration'];
   if ('Physical Activity Level' in sleepData) mappedData['Physical Activity Level'] = sleepData['Physical Activity Level'];
   if ('Heart Rate' in sleepData) mappedData['Heart Rate'] = sleepData['Heart Rate'];
@@ -34,6 +79,8 @@ function mapSleepDataToMLInput(sleepData = {}, environmentalData = {}, dietaryDa
   if ('lightIntensity' in environmentalData) mappedData['Light Intensity'] = Number(environmentalData.lightIntensity);
   if ('temperature' in environmentalData) mappedData['Temperature'] = Number(environmentalData.temperature);
   if ('soundExposure' in environmentalData) mappedData['Sound Exposure'] = environmentalData.soundExposure;
+  if ('noiseLevel' in environmentalData) mappedData['Noise Level'] = Number(environmentalData.noiseLevel);
+  else if ('Noise Level' in environmentalData) mappedData['Noise Level'] = Number(environmentalData['Noise Level']);
 
   // From dietaryData
   if ('takeBreakfast' in dietaryData) mappedData['Take Breakfast'] = dietaryData.takeBreakfast;
