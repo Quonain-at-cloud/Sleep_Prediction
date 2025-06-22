@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'environmental_factors_screen.dart';
 import '../utils/app_constants.dart';
 import '../widgets/custom_bottom_navigation.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -40,13 +41,13 @@ class SquareCheckbox extends StatelessWidget {
 
 class DietaryHabitsScreen extends StatefulWidget {
   final bool onSaveOnly;
-  final Map<String, dynamic>? sleepData;
+  final Map<String, dynamic> sleepData;
   final Map<String, dynamic>? profileInfo; // Added profileInfo
   
   const DietaryHabitsScreen({
     Key? key, 
     this.onSaveOnly = false,
-    this.sleepData,
+    required this.sleepData,
     this.profileInfo, // Added profileInfo
   }) : super(key: key);
 
@@ -581,21 +582,32 @@ class _DietaryHabitsScreenState extends State<DietaryHabitsScreen> {
   void _saveAndContinue() {
     final dietaryData = _buildDietaryData();
     // Robust: Central allData map for all screens
-    final allData = Map<String, dynamic>.from(ModalRoute.of(context)!.settings.arguments as Map);
+    Map<String, dynamic> allData = {};
+    final routeArgs = ModalRoute.of(context)?.settings.arguments;
+    if (routeArgs != null && routeArgs is Map) {
+      allData = Map<String, dynamic>.from(routeArgs);
+    } else {
+      // Fallback to data provided via constructor
+      allData = {
+        'sleepData': widget.sleepData,
+        'profileInfo': widget.profileInfo ?? {},
+      };
+    }
     allData['dietaryData'] = dietaryData;
     if (widget.onSaveOnly) {
       Navigator.of(context).pop(dietaryData);
       return;
     }
     // Defensive: Ensure all keys have minimum default values (not null, not 0)
-    Navigator.pushNamed(
-      context, 
-      AppConstants.environmentalFactorsRoute,
-      arguments: {
-        'sleepData': allData['sleepData'] ?? {'Sleep Duration': 1, 'Awakenings During Night': 1, 'Rate Sleep Quality': 1, 'Stress Level': 1},
-        'profileInfo': allData['profileInfo'] ?? {'age': 1, 'gender': 'male'},
-        'dietaryData': allData['dietaryData'] ?? {'Meals Per Day': 1, 'Meals': []},
-      },
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EnvironmentalFactorsScreen(
+          sleepData: allData['sleepData'] as Map<String, dynamic>?,
+          dietaryData: dietaryData,
+          profileInfo: allData['profileInfo'] as Map<String, dynamic>?,
+        ),
+      ),
     );
   }
 
@@ -721,27 +733,7 @@ class _DietaryHabitsScreenState extends State<DietaryHabitsScreen> {
                 width: MediaQuery.of(context).size.width * 0.85,
                 padding: const EdgeInsets.only(top: 16, left: 24, right: 24),
                 child: ElevatedButton(
-                  onPressed: () {
-                    // Build dietary data object
-                    final dietaryData = _buildDietaryData();
-                    
-                    // If in onSaveOnly mode, return data without navigation
-                    if (widget.onSaveOnly) {
-                      Navigator.of(context).pop(dietaryData);
-                      return;
-                    }
-                    
-                    // Otherwise proceed with normal navigation
-                    Navigator.pushNamed(
-                      context,
-                      AppConstants.environmentalFactorsRoute,
-                      arguments: {
-                        'sleepData': widget.sleepData,
-                        'profileInfo': widget.profileInfo,
-                        'dietaryData': dietaryData,
-                      },
-                    );
-                  },
+                  onPressed: _saveAndContinue,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF65558F),
                     padding: const EdgeInsets.symmetric(vertical: 16),

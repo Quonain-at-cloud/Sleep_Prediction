@@ -30,6 +30,7 @@ class EnvironmentalFactorsScreen extends StatefulWidget {
 }
 
 class _EnvironmentalFactorsScreenState extends State<EnvironmentalFactorsScreen> {
+  final _formKey = GlobalKey<FormState>();
   // Text controllers for inputable fields
   final TextEditingController _lightIntensityController = TextEditingController();
   final TextEditingController _temperatureController = TextEditingController();
@@ -129,10 +130,10 @@ class _EnvironmentalFactorsScreenState extends State<EnvironmentalFactorsScreen>
       return null;
     }
     return {
-      'Light Intensity': lightValue,
-      'Temperature': tempValue,
-      'Sound Exposure': soundExposure,
-      'Noise Level': soundValue,
+      'lightIntensity': lightValue,
+      'temperature': tempValue,
+      'soundExposure': soundExposure,
+      'noiseLevel': soundValue,
     };
   }
 
@@ -204,8 +205,8 @@ class _EnvironmentalFactorsScreenState extends State<EnvironmentalFactorsScreen>
                       Expanded(
                         child: TextField(
                           controller: controller,
-                          readOnly: true,
-                          enabled: false,
+                          readOnly: !(label.toLowerCase().contains('temperature')),
+                          enabled: label.toLowerCase().contains('temperature'),
                           style: const TextStyle(
                             fontFamily: 'Montaga',
                             fontSize: 16,
@@ -258,11 +259,11 @@ class _EnvironmentalFactorsScreenState extends State<EnvironmentalFactorsScreen>
         return;
       }
       // Defensive: Ensure all keys have minimum default values (not null, not 0)
-      final rawArgs = ModalRoute.of(context)!.settings.arguments as Map? ?? {};
+      final rawArgs = ModalRoute.of(context)?.settings.arguments as Map? ?? {};
       final allData = {
-        'sleepData': rawArgs['sleepData'] is Map ? rawArgs['sleepData'] : {'Sleep Duration': 1, 'Awakenings During Night': 1, 'Rate Sleep Quality': 1, 'Stress Level': 1},
-        'dietaryData': rawArgs['dietaryData'] is Map ? rawArgs['dietaryData'] : {'Meals Per Day': 1, 'Meals': []},
-        'profileInfo': rawArgs['profileInfo'] is Map ? rawArgs['profileInfo'] : {'age': 1, 'gender': 'male'},
+        'sleepData': widget.sleepData ?? (rawArgs['sleepData'] is Map ? rawArgs['sleepData'] : null) ?? {'Sleep Duration': 1, 'Awakenings During Night': 1, 'Rate Sleep Quality': 1, 'Stress Level': 1},
+        'dietaryData': widget.dietaryData ?? (rawArgs['dietaryData'] is Map ? rawArgs['dietaryData'] : null) ?? {'Meals Per Day': 1, 'Meals': []},
+        'profileInfo': widget.profileInfo ?? (rawArgs['profileInfo'] is Map ? rawArgs['profileInfo'] : null) ?? {'age': 1, 'gender': 'male'},
       };
       allData['environmentalData'] = envData;
       // Minimum complete maps for all sections
@@ -306,10 +307,10 @@ class _EnvironmentalFactorsScreenState extends State<EnvironmentalFactorsScreen>
         'noOfMealsPerDay': 1,
       };
       Map<String, dynamic> minEnvData = {
-        'Light Intensity': 1,
-        'Temperature': 1,
-        'Sound Exposure': 'Quiet (< 30 dB)',
-        'Noise Level': 1,
+        'lightIntensity': 1,
+        'temperature': 1,
+        'soundExposure': 'Quiet (< 30 dB)',
+        'noiseLevel': 1,
       };
       // Merge user data with minimums (user value priority)
       Map<String, dynamic> mergedSleepData = {...minSleepData, ...allData['sleepData']};
@@ -342,17 +343,44 @@ class _EnvironmentalFactorsScreenState extends State<EnvironmentalFactorsScreen>
         }
         return;
       }
-      await predictionService.submitSleepData(
-        userId: userId,
-        sleepPatterns: safeSleepData,
-        profileInfo: safeProfileInfo,
-        dietaryHabits: safeDietaryData,
-        environmentalFactors: safeEnvData,
-      );
+      void _submitDataForPrediction() {
+        if (!_formKey.currentState!.validate()) {
+          return; // If form is not valid, do not proceed
+        }
+
+        // Show loading dialog
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return const Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              ),
+            );
+          },
+        );
+
+        // Build the environmental data object
+        final environmentalData = _buildEnvironmentalData();
+
+        // Use a Future.delayed to simulate network latency and allow UI to update
+        Future.delayed(const Duration(seconds: 1), () {
+          Navigator.pop(context); // Close loading dialog
+
+          // Make the prediction
+          predictionService.makePrediction(
+            sleepData: safeSleepData,
+            dietaryData: safeDietaryData,
+            environmentalData: safeEnvData,
+            profileInfo: safeProfileInfo,
+          );
+        });
+      }
       await predictionService.makePrediction(
         sleepData: safeSleepData,
-        environmentalData: safeEnvData,
         dietaryData: safeDietaryData,
+        environmentalData: safeEnvData,
         profileInfo: safeProfileInfo,
       );
       final Map<String, dynamic> predictionResult = await predictionService.fetchLatestPredictionWithRecommendations(userId);
@@ -456,7 +484,7 @@ class _EnvironmentalFactorsScreenState extends State<EnvironmentalFactorsScreen>
                                     contentPadding: EdgeInsets.symmetric(vertical: 8),
                                     isDense: true,
                                   ),
-                                  enabled: false, // Make read-only
+                                  enabled: false, // read-only
                                 ),
                               ),
                               const Text(
@@ -519,7 +547,7 @@ class _EnvironmentalFactorsScreenState extends State<EnvironmentalFactorsScreen>
                                     contentPadding: EdgeInsets.symmetric(vertical: 8),
                                     isDense: true,
                                   ),
-                                  enabled: false, // Make read-only
+                                  enabled: false, // read-only
                                 ),
                               ),
                               const Text(

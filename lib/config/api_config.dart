@@ -6,7 +6,7 @@ class ApiConfig {
   // Update this to the IP of the machine running the backend that is reachable from your phone.
   // Set this to your PC's current IP address (from ipconfig) when connected to your phone's hotspot.
   // Example: 'http://192.168.43.123:3000/api'
-  static const String deviceBaseUrl = 'http://192.168.100.10:3000/api';
+  static const String deviceBaseUrl = 'http://10.0.0.4:3000/api';
   
   // For local development (when testing on the same machine)
   static const String localhostUrl = 'http://localhost:3000/api';
@@ -70,6 +70,7 @@ class _SleepDataEndpoints {
   String byDateRange(DateTime start, DateTime end) => 
       '$base?startDate=${start.toIso8601String()}&endDate=${end.toIso8601String()}';
 }
+
 
 class _PredictionEndpoints {
   final String base = '/predictions';

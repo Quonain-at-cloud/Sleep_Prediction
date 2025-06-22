@@ -98,63 +98,7 @@ class PredictionService extends BaseService {
     }
   }
   
-  // Utility to map Flutter data to backend keys
-  Map<String, dynamic> mapToBackendFormat({
-    required Map<String, dynamic> sleepData,
-    required Map<String, dynamic> environmentalData,
-    required Map<String, dynamic> dietaryData,
-    Map<String, dynamic>? profileInfo,
-  }) {
-    final mapped = <String, dynamic>{};
-    // Profile info
-    if (profileInfo != null) {
-      if (profileInfo['userName'] != null) mapped['userName'] = profileInfo['userName'];
-      if (profileInfo['Age'] != null) mapped['Age'] = profileInfo['Age'];
-      if (profileInfo['Gender'] != null) mapped['Gender'] = profileInfo['Gender'];
-      if (profileInfo['BMI Category'] != null) mapped['BMI Category'] = profileInfo['BMI Category'];
-    }
-    // Sleep data (all possible keys)
-    if (sleepData['weekdayBedtimeHour'] != null) mapped['Weekday Bedtime Hour'] = sleepData['weekdayBedtimeHour'];
-    if (sleepData['weekdayBedtimeMinute'] != null) mapped['Weekday Bedtime Minute'] = sleepData['weekdayBedtimeMinute'];
-    if (sleepData['weekdayWakeUpHour'] != null) mapped['Weekday Wake-up Hour'] = sleepData['weekdayWakeUpHour'];
-    if (sleepData['weekdayWakeUpMinute'] != null) mapped['Weekday Wake-up Minute'] = sleepData['weekdayWakeUpMinute'];
-    if (sleepData['weekendBedtimeHour'] != null) mapped['Weekend Bedtime Hour'] = sleepData['weekendBedtimeHour'];
-    if (sleepData['weekendBedtimeMinute'] != null) mapped['Weekend Bedtime Minute'] = sleepData['weekendBedtimeMinute'];
-    if (sleepData['weekendWakeUpHour'] != null) mapped['Weekend Wake-up Hour'] = sleepData['weekendWakeUpHour'];
-    if (sleepData['weekendWakeUpMinute'] != null) mapped['Weekend Wake-up Minute'] = sleepData['weekendWakeUpMinute'];
-    if (sleepData['awakeningsDuringNight'] != null) mapped['Awakenings During Night'] = sleepData['awakeningsDuringNight'];
-    else if (sleepData['awakenings'] != null) mapped['Awakenings During Night'] = sleepData['awakenings'];
-    if (sleepData['rateSleepQuality'] != null) mapped['Rate Sleep Quality'] = sleepData['rateSleepQuality'];
-    if (sleepData['useElectronicDevicesBeforeBed'] != null) mapped['Use Electronic Devices Before Bed'] = sleepData['useElectronicDevicesBeforeBed'];
-    if (sleepData['howRelaxedBeforeSleep'] != null) mapped['How Relaxed Before Sleep'] = sleepData['howRelaxedBeforeSleep'];
-    if (sleepData['Sleep Duration'] != null) mapped['Sleep Duration'] = sleepData['Sleep Duration'];
-    if (sleepData['Physical Activity Level'] != null) mapped['Physical Activity Level'] = sleepData['Physical Activity Level'];
-    if (sleepData['Heart Rate'] != null) mapped['Heart Rate'] = sleepData['Heart Rate'];
-    if (sleepData['Daily Steps'] != null) mapped['Daily Steps'] = sleepData['Daily Steps'];
-    if (sleepData['Stress Level'] != null) mapped['Stress Level'] = sleepData['Stress Level'];
-    // Environmental data
-    if (environmentalData['lightIntensity'] != null) mapped['Light Intensity'] = environmentalData['lightIntensity'];
-    if (environmentalData['temperature'] != null) mapped['Temperature'] = environmentalData['temperature'];
-    if (environmentalData['soundExposure'] != null) mapped['Sound Exposure'] = environmentalData['soundExposure'];
-    // Dietary data
-    if (dietaryData['takeBreakfast'] != null) mapped['Take Breakfast'] = dietaryData['takeBreakfast'];
-    if (dietaryData['breakfastTimeHour'] != null) mapped['Breakfast Time Hour'] = dietaryData['breakfastTimeHour'];
-    if (dietaryData['breakfastTimeMinute'] != null) mapped['Breakfast Time Minute'] = dietaryData['breakfastTimeMinute'];
-    if (dietaryData['breakfastFoodType'] != null) mapped['Breakfast Food Type'] = dietaryData['breakfastFoodType'];
-    if (dietaryData['breakfastPortionSize'] != null) mapped['Breakfast Portion Size'] = dietaryData['breakfastPortionSize'];
-    if (dietaryData['doLunch'] != null) mapped['Do Lunch'] = dietaryData['doLunch'];
-    if (dietaryData['lunchTimeHour'] != null) mapped['Lunch Time Hour'] = dietaryData['lunchTimeHour'];
-    if (dietaryData['lunchTimeMinute'] != null) mapped['Lunch Time Minute'] = dietaryData['lunchTimeMinute'];
-    if (dietaryData['lunchFoodType'] != null) mapped['Lunch Food Type'] = dietaryData['lunchFoodType'];
-    if (dietaryData['lunchPortionSize'] != null) mapped['Lunch Portion Size'] = dietaryData['lunchPortionSize'];
-    if (dietaryData['haveDinner'] != null) mapped['Have Dinner'] = dietaryData['haveDinner'];
-    if (dietaryData['dinnerTimeHour'] != null) mapped['Dinner Time Hour'] = dietaryData['dinnerTimeHour'];
-    if (dietaryData['dinnerTimeMinute'] != null) mapped['Dinner Time Minute'] = dietaryData['dinnerTimeMinute'];
-    if (dietaryData['dinnerFoodType'] != null) mapped['Dinner Food Type'] = dietaryData['dinnerFoodType'];
-    if (dietaryData['dinnerPortionSize'] != null) mapped['Dinner Portion Size'] = dietaryData['dinnerPortionSize'];
-    if (dietaryData['noOfMealsPerDay'] != null) mapped['No Of Meals Per Day'] = dietaryData['noOfMealsPerDay'];
-    return mapped;
-  }
+
   
   // Make AI-based prediction with user-provided data
   Future<PredictionModel?> makePrediction({
@@ -165,36 +109,33 @@ class PredictionService extends BaseService {
   }) async {
     try {
       _logger.i('Making AI prediction with user data');
-      // Always fetch the latest user profile for age/gender
-      final userProfile = await serviceLocator.auth.getCurrentUserModel();
-      if (userProfile == null) {
-        throw Exception('User profile not found. Cannot make prediction.');
+      
+      final userId = await serviceLocator.auth.getCurrentUserId();
+      if (userId == null) {
+        throw Exception('User not authenticated. Cannot make prediction.');
       }
-      // Prepare profile info for mapping
-      final profileMap = {
-        'Age': _calculateAge(userProfile.dateOfBirth),
-        'Gender': userProfile.gender,
-        'userName': userProfile.name,
-        // Add more fields if backend expects
-      };
-      // Map all data to backend format
-      final mappedData = mapToBackendFormat(
-        sleepData: sleepData,
-        environmentalData: environmentalData,
-        dietaryData: dietaryData,
-        profileInfo: profileMap,
-      );
-      final data = {
-        'sleepData': mappedData,
+
+      // Combine sleep data with profile info, as the backend expects a single sleepData object
+      final Map<String, dynamic> finalSleepData = Map.from(sleepData);
+      if (profileInfo != null) {
+        finalSleepData.addAll(profileInfo);
+      }
+
+      final payload = {
+        'userId': userId,
+        'sleepData': finalSleepData,
         'environmentalData': environmentalData,
         'dietaryData': dietaryData,
       };
-      _logger.i('Sending data to endpoint: [33m${ApiConfig.endpoints.predictions.predict}[0m');
-      _logger.i('Payload: ${jsonEncode(data)}');
+
+      _logger.i('Sending data to endpoint: ${ApiConfig.endpoints.predictions.predict}');
+      _logger.i('Payload: ${jsonEncode(payload)}');
+
       final response = await _apiService.post(
         ApiConfig.endpoints.predictions.predict,
-        data,
+        payload,
       );
+
       if (response != null && response is Map<String, dynamic>) {
         _logger.i('Prediction response received: $response');
         return PredictionModel.fromJson(response);
@@ -435,16 +376,8 @@ class PredictionService extends BaseService {
       'userName': userProfile.name,
     };
 
-    // 2. Map all data to backend format
-    final mappedData = mapToBackendFormat(
-      sleepData: sleepData,
-      environmentalData: environmentalData,
-      dietaryData: dietaryData,
-      profileInfo: profileMap,
-    );
-
     final requestData = {
-      'sleepData': mappedData,
+      'sleepData': sleepData,
       'environmentalData': environmentalData,
       'dietaryData': dietaryData,
     };

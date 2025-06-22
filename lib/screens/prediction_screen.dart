@@ -482,15 +482,10 @@ class _PredictionScreenState extends State<PredictionScreen> {
       // Build profile info for backend
       final profileInfo = _buildProfileInfo(_userProfile!);
       // Use the mapping utility to flatten and map all data to backend keys
-      final mappedData = _predictionService.mapToBackendFormat(
-        sleepData: widget.sleepData ?? {},
-        environmentalData: widget.environmentalData ?? {},
-        dietaryData: widget.dietaryData ?? {},
-        profileInfo: profileInfo,
-      );
-      _logger.i('[PREDICTION] Sending mappedData to backend: ' + jsonEncode(mappedData));
+
+      _logger.i('[PREDICTION] Sending mappedData to backend: ' + jsonEncode(widget.sleepData ?? {}));
       final prediction = await _predictionService.makePrediction(
-        sleepData: mappedData,
+        sleepData: widget.sleepData ?? {},
         environmentalData: widget.environmentalData ?? {},
         dietaryData: widget.dietaryData ?? {},
         profileInfo: profileInfo,

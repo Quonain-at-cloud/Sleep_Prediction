@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'dietary_habits_screen.dart';
 import '../utils/app_constants.dart';
 import '../utils/app_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -336,122 +338,93 @@ class _SleepPatternsScreenState extends State<SleepPatternsScreen> {
 
   // Build sleep data map from form inputs
   Map<String, dynamic> _buildSleepData() {
-    // Always include all required fields, using current UI values
+    // Debug log to check the values before creating the map
+    print('--- Building Sleep Data ---');
+    print('Weekday Bedtime: ${_weekdayBedtime.hour}:${_weekdayBedtime.minute}');
+    print('Weekday Wake-up: ${_weekdayWakeup.hour}:${_weekdayWakeup.minute}');
+    print('Weekend Bedtime: ${_weekendBedtime.hour}:${_weekendBedtime.minute}');
+    print('Weekend Wake-up: ${_weekendWakeup.hour}:${_weekendWakeup.minute}');
+    print('Sleep Duration: $_sleepDuration');
+    print('Awakenings: $_awakenings');
+    print('Rate Sleep Quality: $_rateSleepQuality');
+    print('Relaxed Before Sleep: $_relaxedBeforeSleep');
+    print('Use Electronics: $_useElectronics');
+    print('Stress Level: $_stressLevel');
+    print('--------------------------');
+
     return {
       'Sleep Duration': _sleepDuration,
       'Awakenings During Night': _awakenings,
       'Rate Sleep Quality': _rateSleepQuality,
       'Stress Level': _stressLevel,
-      'weekdayBedtimeHour': _weekdayBedtime.hour,
-      'weekdayBedtimeMinute': _weekdayBedtime.minute,
-      'weekdayWakeUpHour': _weekdayWakeup.hour,
-      'weekdayWakeUpMinute': _weekdayWakeup.minute,
-      'weekendBedtimeHour': _weekendBedtime.hour,
-      'weekendBedtimeMinute': _weekendBedtime.minute,
-      'weekendWakeUpHour': _weekendWakeup.hour,
-      'weekendWakeUpMinute': _weekendWakeup.minute,
-      'howRelaxedBeforeSleep': _relaxedBeforeSleep,
-      'useElectronicDevicesBeforeBed': _useElectronics,
-      // Add more fields if needed for backend
+      'Weekday Bedtime Hour': _weekdayBedtime.hour,
+      'Weekday Bedtime Minute': _weekdayBedtime.minute,
+      'Weekday Wake-up Hour': _weekdayWakeup.hour,
+      'Weekday Wake-up Minute': _weekdayWakeup.minute,
+      'Weekend Bedtime Hour': _weekendBedtime.hour,
+      'Weekend Bedtime Minute': _weekendBedtime.minute,
+      'Weekend Wake-up Hour': _weekendWakeup.hour,
+      'Weekend Wake-up Minute': _weekendWakeup.minute,
+      'How Relaxed Before Sleep': _relaxedBeforeSleep,
+      'Use Electronic Devices Before Bed': _useElectronics,
     };
   }
 
   // Save sleep data and navigate to next screen
   void _saveAndContinue() {
     final sleepData = _buildSleepData();
-    // Validate all required fields
-    final requiredKeys = [
-      'Sleep Duration',
-      'Awakenings During Night',
-      'Rate Sleep Quality',
-      'Stress Level',
-    ];
-    for (final key in requiredKeys) {
-      if (sleepData[key] == null || sleepData[key].toString().isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Missing required field: $key')),
-        );
-        return;
-      }
+
+    // Basic validation
+    if (sleepData['Sleep Duration'] == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter sleep duration.')),
+      );
+      return;
     }
-    // Check if this is a first-time user who needs to set age and gender
+
     if (_isFirstTimeUser) {
-      // Validate age and gender inputs
       if (_ageController.text.isEmpty || _selectedGender == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Please enter your age and select your gender'),
-            backgroundColor: Colors.red,
-          ),
+          const SnackBar(content: Text('Please enter your age and select your gender.')),
         );
         return;
       }
-      
       final age = int.tryParse(_ageController.text);
-      if (age == null || age < 1 || age > 120) {
+      if (age == null || age <= 0) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Please enter a valid age between 1 and 120'),
-            backgroundColor: Colors.red,
-          ),
+          const SnackBar(content: Text('Please enter a valid age.')),
         );
         return;
       }
-      
-      // Show loading indicator
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return const Center(
-            child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-            ),
-          );
-        },
+
+      // Update profile via BLoC
+      final now = DateTime.now();
+      final dateOfBirth = DateTime(now.year - age, now.month, now.day);
+
+      BlocProvider.of<AuthBloc>(context).add(
+        UpdateProfileEvent(dateOfBirth: dateOfBirth, gender: _selectedGender!.toLowerCase()),
       );
-      
-      // Calculate date of birth from age
-      final dateOfBirth = DateTime.now().subtract(Duration(days: age * 365));
-      
-      // Update user profile with age and gender
-      final authBloc = BlocProvider.of<AuthBloc>(context);
-      authBloc.add(UpdateProfileEvent(
-        dateOfBirth: dateOfBirth,
-        gender: _selectedGender!.toLowerCase(),
-      ));
-      
-      // Navigation will be handled in the BlocListener when the profile update is successful
-    } else {
-      // Robust: Central allData map for all screens
-      final currentUserState = BlocProvider.of<AuthBloc>(context).state;
-      Map<String, dynamic> profileInfo = {};
-      if (currentUserState is AuthAuthenticated && currentUserState.user != null) {
-        final user = currentUserState.user!;
-        int age = 0;
-        if (user['dateOfBirth'] != null) {
-          try {
-            final dob = DateTime.parse(user['dateOfBirth'].toString());
-            age = DateTime.now().year - dob.year;
-            if (DateTime.now().month < dob.month || 
-                (DateTime.now().month == dob.month && DateTime.now().day < dob.day)) {
-              age--;
-            }
-          } catch (e) {}
-        }
-        profileInfo = {
-          'age': age,
-          'gender': user['gender'] ?? ''
-        };
-      }
-      final allData = {
-        'sleepData': sleepData,
-        'profileInfo': profileInfo,
-      };
-      Navigator.pushNamed(
+
+      // Prepare data for next screen
+      final profileInfo = {'Age': age, 'Gender': _selectedGender};
+      final combinedData = {...sleepData, ...profileInfo};
+
+      Navigator.push(
         context,
-        AppConstants.dietaryHabitsRoute,
-        arguments: allData,
+        MaterialPageRoute(
+          builder: (context) => DietaryHabitsScreen(
+            sleepData: combinedData,
+            profileInfo: profileInfo,
+          ),
+        ),
+      );
+    } else {
+      // For existing users, just pass sleep data
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => DietaryHabitsScreen(sleepData: sleepData),
+        ),
       );
     }
   }
