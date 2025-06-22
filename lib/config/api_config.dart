@@ -12,12 +12,12 @@ class ApiConfig {
   static const String localhostUrl = 'http://localhost:3000/api';
   
   // Production URL - Virtual Machine deployment
-  static const String prodBaseUrl = 'http://20.2.139.176:3000/api';
+  static const String prodBaseUrl = 'http://172.190.116.235:3000/api';
   
   // CONFIGURATION OPTIONS - Update these as needed
   // IMPORTANT: Set isPhysicalDevice to true when testing on a physical device
-  static const bool isPhysicalDevice = true;   // Set to false for local dev on emulator/desktop
-  static const bool isDevelopment = true;      // Set to true for local development
+  static const bool isPhysicalDevice = true;
+  static const bool isDevelopment = false;      // Set to false to use production server
   static const bool useLocalhost = false;       // Use localhost for all API calls
   
   // Get the base URL based on environment and device type
