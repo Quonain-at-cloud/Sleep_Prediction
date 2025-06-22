@@ -6,18 +6,18 @@ class ApiConfig {
   // Update this to the IP of the machine running the backend that is reachable from your phone.
   // Set this to your PC's current IP address (from ipconfig) when connected to your phone's hotspot.
   // Example: 'http://192.168.43.123:3000/api'
-  static const String deviceBaseUrl = 'http://10.0.0.4:3000/api';
+  static const String deviceBaseUrl = 'http://172.190.116.235:3000/api';
   
   // For local development (when testing on the same machine)
   static const String localhostUrl = 'http://localhost:3000/api';
   
   // Production URL - Virtual Machine deployment
-  static const String prodBaseUrl = 'http://20.2.139.176:3000/api';
+  static const String prodBaseUrl = 'http://172.190.116.235:3000/api';
   
   // CONFIGURATION OPTIONS - Update these as needed
   // IMPORTANT: Set isPhysicalDevice to true when testing on a physical device
-  static const bool isPhysicalDevice = true;   // Set to false for local dev on emulator/desktop
-  static const bool isDevelopment = true;      // Set to true for local development
+  static const bool isPhysicalDevice = true;
+  static const bool isDevelopment = false;      // Set to false to use production server
   static const bool useLocalhost = false;       // Use localhost for all API calls
   
   // Get the base URL based on environment and device type
