@@ -316,22 +316,34 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                       child: Builder(
                         builder: (context) {
                           final scheduleProvider = Provider.of<ScheduleProvider>(context);
-                            final scheduleByDay = scheduleProvider.scheduleByDay;
-                            final isLoading = scheduleProvider.isLoading;
-                            final error = scheduleProvider.error;
-                            final schedule = scheduleByDay[selectedDay] ?? [];
-                            if (isLoading) {
-                              return const Center(child: CircularProgressIndicator());
-                            }
-                            if (error != null && error.isNotEmpty) {
-                              return Center(
-                                child: Text(
-                                  error,
-                                  style: const TextStyle(color: Color(0xFF2D2041), fontSize: 16),
-                                ),
-                              );
-                            }
-                          if (schedule.isEmpty) {
+                          final scheduleByDay = scheduleProvider.scheduleByDay;
+                          final isLoading = scheduleProvider.isLoading;
+                          final error = scheduleProvider.error;
+                          final schedule = scheduleByDay[selectedDay] ?? [];
+                          // Sort by time
+                          final sortedSchedule = [...schedule]
+                            ..sort((a, b) {
+                               final aTime = a.date;
+                               final bTime = b.date;
+                               return aTime.compareTo(bTime);
+                             });
+
+                          // Determine if user can add new schedule for selected day
+                          final DateTime today = DateTime.now();
+                          final DateTime selectedDate = DateTime(today.year, today.month, selectedDay);
+                          final bool allowAdd = !selectedDate.isBefore(DateTime(today.year, today.month, today.day));
+                          if (isLoading) {
+                            return const Center(child: CircularProgressIndicator());
+                          }
+                          if (error != null && error.isNotEmpty) {
+                            return Center(
+                              child: Text(
+                                error,
+                                style: const TextStyle(color: Color(0xFF2D2041), fontSize: 16),
+                              ),
+                            );
+                          }
+                          if (sortedSchedule.isEmpty && !allowAdd) {
                             return const Center(
                               child: Text(
                                 'No events for this day.',
@@ -341,23 +353,23 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                           }
                           return ListView.separated(
                             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                            itemCount: schedule.length + 1,
+                            itemCount: allowAdd ? sortedSchedule.length + 1 : sortedSchedule.length,
                             separatorBuilder: (_, __) => const SizedBox(height: 16),
                             itemBuilder: (context, index) {
-                              if (index == schedule.length) {
-                               // Add-new row
-                               return GestureDetector(
-                                 onTap: _showAddScheduleSheet,
-                                 child: Row(
-                                   children: [
-                                     const Icon(Icons.add_circle_outline, color: Color(0xFF2D2041)),
-                                     const SizedBox(width: 12),
-                                     const Text('Add new', style: TextStyle(fontSize: 16, color: Color(0xFF2D2041))),
-                                   ],
-                                 ),
-                               );
-                             }
-                             final ScheduleModel item = schedule[index];
+                              if (allowAdd && index == sortedSchedule.length) {
+                                // Add-new row
+                                return GestureDetector(
+                                  onTap: () => _showAddScheduleSheet(selectedDate),
+                                  child: Row(
+                                    children: [
+                                      const Icon(Icons.add_circle_outline, color: Color(0xFF2D2041)),
+                                      const SizedBox(width: 12),
+                                      const Text('Add new', style: TextStyle(fontSize: 16, color: Color(0xFF2D2041))),
+                                    ],
+                                  ),
+                                );
+                              }
+                              final ScheduleModel item = sortedSchedule[index];
                               return Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -469,8 +481,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   }
 
   // ========================= ADD NEW SCHEDULE =========================
-  void _showAddScheduleSheet() {
-    _showScheduleSheet();
+  void _showAddScheduleSheet(DateTime targetDate) {
+    _showScheduleSheet(initialDate: targetDate);
   }
 
   // ========================= EDIT SCHEDULE =========================
@@ -479,9 +491,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   }
 
   /// Bottom-sheet used for both add & edit.
-  void _showScheduleSheet({ScheduleModel? existing}) {
+  void _showScheduleSheet({ScheduleModel? existing, DateTime? initialDate}) {
     final titleCtrl = TextEditingController(text: existing?.label ?? '');
-    DateTime selectedDateTime = existing?.date ?? DateTime.now();
+    DateTime selectedDateTime = existing?.date ?? (initialDate ?? DateTime.now());
     final isEditing = existing != null;
 
     showModalBottomSheet(

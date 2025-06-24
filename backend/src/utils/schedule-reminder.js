@@ -12,16 +12,21 @@ function start() {
   cron.schedule('* * * * *', async () => {
     try {
       const now = new Date();
+      const oneMinuteAgo = new Date(now.getTime() - 60 * 1000);
       const upcoming = await Schedule.find({
         completed: false,
         reminderSent: false,
-        startTime: { $lte: new Date(now.getTime() + 60 * 1000) },
+        startTime: { $gte: oneMinuteAgo, $lte: new Date(now.getTime() + 60 * 1000) },
       });
+
+      if (upcoming.length) {
+        console.log(`[CRON] Found ${upcoming.length} upcoming schedule(s) at ${now.toISOString()}`);
+      }
 
       for (const item of upcoming) {
         const payload = {
-          title: `${item.title} time!`,
-          message: `It's time for ${item.category}.`,
+          title: `${item.title || 'Schedule Reminder'}`,
+          message: item.category ? `It's time for ${item.category}.` : 'It\'s time for your scheduled activity.',
           timestamp: new Date().toISOString(),
           userId: item.userId.toString(),
         };
