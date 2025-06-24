@@ -180,7 +180,7 @@ exports.getUserProgressReport = async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(14); // Fetch last 14 days to compare two 7-day periods if possible, or split a 7-day period
 
-    if (sleepDataEntries.length < 4) { // Need at least 2 data points for each period
+    if (sleepDataEntries.length < 2) { // Need at least 1 data point per period
       logger.info(`Not enough data for user ${userId} to generate progress report. Found ${sleepDataEntries.length} entries.`);
       return res.status(200).json([]); // Return empty array or a specific message
     }
@@ -188,7 +188,7 @@ exports.getUserProgressReport = async (req, res) => {
     // Split data: for simplicity, compare the first half of available data with the second half
     // More robust: compare last 7 days with previous 7 days if 14 days available.
     // For now, if 4-14 days, split into two halves.
-    const midPoint = Math.floor(sleepDataEntries.length / 2);
+    const midPoint = Math.ceil(sleepDataEntries.length / 2); // ensures current period has the most recent entry
     const previousPeriodData = sleepDataEntries.slice(midPoint).reverse(); // Older data, reversed to be chronological for averaging if needed
     const currentPeriodData = sleepDataEntries.slice(0, midPoint).reverse(); // Newer data, reversed
     

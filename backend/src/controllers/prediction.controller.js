@@ -69,6 +69,53 @@ exports.predict = async (req, res) => {
     });
     await predictionDoc.save();
 
+    // Persist the raw data for progress reports if available
+    try {
+      if (typeof sleepData !== 'undefined') {
+        const sleepDataDoc = new SleepData({
+          userId,
+          sleepPatterns: {
+            weekdayBedtime: `${sleepData['Weekday Bedtime Hour'] ?? ''}:${sleepData['Weekday Bedtime Minute'] ?? ''}`,
+            weekdayWakeup: `${sleepData['Weekday Wake-up Hour'] ?? ''}:${sleepData['Weekday Wake-up Minute'] ?? ''}`,
+            weekendBedtime: `${sleepData['Weekend Bedtime Hour'] ?? ''}:${sleepData['Weekend Bedtime Minute'] ?? ''}`,
+            weekendWakeup: `${sleepData['Weekend Wake-up Hour'] ?? ''}:${sleepData['Weekend Wake-up Minute'] ?? ''}`,
+            sleepDuration: sleepData['Sleep Duration'],
+            awakenings: sleepData['Awakenings During Night'],
+            sleepQuality: sleepData['Rate Sleep Quality'],
+            relaxedBeforeSleep: sleepData['How Relaxed Before Sleep'],
+            useElectronics: sleepData['Use Electronic Devices Before Bed'],
+            stressLevel: sleepData['Stress Level'] ?? sleepData['stressLevel'] ?? sleepData['Stress_Level']
+          },
+          dietaryHabits: (typeof dietaryData !== 'undefined') ? {
+            mealsPerDay: dietaryData['No Of Meals Per Day'] ?? dietaryData['Meals Per Day'],
+            meals: dietaryData.Meals || [],
+            caffeineAfterNoon: dietaryData['Caffeine After Noon'],
+            alcoholBeforeBed: dietaryData['Alcohol Before Bed'],
+            heavyMealBeforeBed: dietaryData['Heavy Meal Before Bed'],
+            waterIntake: dietaryData['Water Intake'],
+            mealTimingConsistent: dietaryData['Meal Timing Consistent'],
+            balancedMeals: dietaryData['Balanced Meals'],
+            lateNightSnacking: dietaryData['Late Night Snacking']
+          } : undefined,
+          environmentalFactors: (typeof environmentalData !== 'undefined') ? {
+            lightIntensity: environmentalData.lightIntensity ?? environmentalData['Light Intensity'],
+            temperature: environmentalData.temperature ?? environmentalData.Temperature,
+            noiseLevel: environmentalData.noiseLevel ?? environmentalData['Noise Level']
+          } : undefined,
+        });
+        await sleepDataDoc.save();
+      }
+    } catch (persistErr) {
+      console.error('Failed to persist SleepData:', persistErr.message);
+    }
+
+    // Generate a default schedule for today so reminders can be sent
+    try {
+      await generateTodaySchedule(userId.toString());
+    } catch (schedErr) {
+      console.error('Schedule generation failed:', schedErr.message);
+    }
+
     // Send notification to user
     try {
       notificationController.sendNotification({
@@ -417,6 +464,53 @@ exports.getPredictionWithRecommendations = async (req, res) => {
         inputData: mlInputData
       });
       await predictionDoc.save();
+
+    // Persist the raw data for progress reports if available
+    try {
+      if (typeof sleepData !== 'undefined') {
+        const sleepDataDoc = new SleepData({
+          userId,
+          sleepPatterns: {
+            weekdayBedtime: `${sleepData['Weekday Bedtime Hour'] ?? ''}:${sleepData['Weekday Bedtime Minute'] ?? ''}`,
+            weekdayWakeup: `${sleepData['Weekday Wake-up Hour'] ?? ''}:${sleepData['Weekday Wake-up Minute'] ?? ''}`,
+            weekendBedtime: `${sleepData['Weekend Bedtime Hour'] ?? ''}:${sleepData['Weekend Bedtime Minute'] ?? ''}`,
+            weekendWakeup: `${sleepData['Weekend Wake-up Hour'] ?? ''}:${sleepData['Weekend Wake-up Minute'] ?? ''}`,
+            sleepDuration: sleepData['Sleep Duration'],
+            awakenings: sleepData['Awakenings During Night'],
+            sleepQuality: sleepData['Rate Sleep Quality'],
+            relaxedBeforeSleep: sleepData['How Relaxed Before Sleep'],
+            useElectronics: sleepData['Use Electronic Devices Before Bed'],
+            stressLevel: sleepData['Stress Level'] ?? sleepData['stressLevel'] ?? sleepData['Stress_Level']
+          },
+          dietaryHabits: (typeof dietaryData !== 'undefined') ? {
+            mealsPerDay: dietaryData['No Of Meals Per Day'] ?? dietaryData['Meals Per Day'],
+            meals: dietaryData.Meals || [],
+            caffeineAfterNoon: dietaryData['Caffeine After Noon'],
+            alcoholBeforeBed: dietaryData['Alcohol Before Bed'],
+            heavyMealBeforeBed: dietaryData['Heavy Meal Before Bed'],
+            waterIntake: dietaryData['Water Intake'],
+            mealTimingConsistent: dietaryData['Meal Timing Consistent'],
+            balancedMeals: dietaryData['Balanced Meals'],
+            lateNightSnacking: dietaryData['Late Night Snacking']
+          } : undefined,
+          environmentalFactors: (typeof environmentalData !== 'undefined') ? {
+            lightIntensity: environmentalData.lightIntensity ?? environmentalData['Light Intensity'],
+            temperature: environmentalData.temperature ?? environmentalData.Temperature,
+            noiseLevel: environmentalData.noiseLevel ?? environmentalData['Noise Level']
+          } : undefined,
+        });
+        await sleepDataDoc.save();
+      }
+    } catch (persistErr) {
+      console.error('Failed to persist SleepData:', persistErr.message);
+    }
+
+    // Generate a default schedule for today so reminders can be sent
+    try {
+      await generateTodaySchedule(userId.toString());
+    } catch (schedErr) {
+      console.error('Schedule generation failed:', schedErr.message);
+    }
     } catch (persistErr) {
       console.error('Failed to persist newly generated prediction:', persistErr);
     }

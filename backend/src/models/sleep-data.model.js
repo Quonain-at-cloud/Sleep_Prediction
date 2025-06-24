@@ -2,11 +2,11 @@
 const mongoose = require('mongoose');
 // Define a separate schema for meal objects
 const mealSchema = new mongoose.Schema({
-  type: { type: String, required: true },
-  isRegular: { type: Boolean, required: true },
-  time: { type: String, required: true },
-  portionSize: { type: Number, required: true },
-  foodTypes: { type: [String], required: true }
+  type: { type: String },
+  isRegular: { type: Boolean },
+  time: { type: String },
+  portionSize: { type: Number },
+  foodTypes: { type: [String] }
 }, { _id: false });
 
 // Remove old fields no longer used in new schema

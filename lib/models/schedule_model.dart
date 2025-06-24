@@ -28,7 +28,7 @@ class ScheduleModel {
       time: json['time'] ?? _formatTime(json['startTime']),
       label: json['label'] ?? json['title'] ?? '',
       type: json['type'],
-      checked: json['checked'] ?? false,
+      checked: json['completed'] ?? json['checked'] ?? false,
     );
   }
 
@@ -39,31 +39,15 @@ class ScheduleModel {
       'startTime': date.toIso8601String(),
       'endTime': null, // optional, not used in UI
       if (type != null) 'type': type,
-      'checked': checked,
+      'completed': checked,
     };
   }
 
-  /// Helper to get UI color based on optional type or label
-  Color get uiColor {
-    switch (type ?? label.toLowerCase()) {
-      case 'wake up':
-      case 'wake_up':
-        return const Color(0xFFFFD6E0);
-      case 'breakfast':
-      case 'break-fast':
-        return const Color(0xFFF7F7C6);
-      case 'lunch':
-        return const Color(0xFFF7F7C6);
-      case 'dinner':
-      case 'diner':
-        return const Color(0xFFF7F7C6);
-      case 'sleep':
-      case 'sleep time':
-        return const Color(0xFFF7F7C6);
-      default:
-        return const Color(0xFFDED6F3);
-    }
-  }
+  /// UI background colour depending on completion state
+  Color get uiColor => checked
+      ? const Color(0xFFF8C9E9) // pink if completed
+      : const Color(0xFFFFF9C4); // light yellow if pending
+  
 
   /// Helper to get icon based on label/type
   // Convert ISO string (or Date) to human-readable time string

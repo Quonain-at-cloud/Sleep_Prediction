@@ -40,6 +40,10 @@ exports.updateSchedule = async (req, res) => {
   if (validationErr) return;
 
   try {
+    // If client toggles completed, adjust color accordingly
+    if (typeof req.body.completed === 'boolean') {
+      req.body.color = req.body.completed ? '#F8C9E9' /* pink for done */ : '#FFF9C4' /* soft yellow for pending */;
+    }
     const updated = await Schedule.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!updated) return res.status(404).json({ error: 'Schedule not found' });
     return res.status(200).json(updated);

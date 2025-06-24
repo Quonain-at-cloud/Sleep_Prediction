@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../providers/schedule_provider.dart';
 import '../models/schedule_model.dart';
+import '../services/auth_service.dart';
 
 class ScheduleScreen extends StatefulWidget {
   const ScheduleScreen({Key? key}) : super(key: key);
@@ -340,25 +341,48 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                           }
                           return ListView.separated(
                             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                            itemCount: schedule.length,
+                            itemCount: schedule.length + 1,
                             separatorBuilder: (_, __) => const SizedBox(height: 16),
                             itemBuilder: (context, index) {
-                              final ScheduleModel item = schedule[index];
+                              if (index == schedule.length) {
+                               // Add-new row
+                               return GestureDetector(
+                                 onTap: _showAddScheduleSheet,
+                                 child: Row(
+                                   children: [
+                                     const Icon(Icons.add_circle_outline, color: Color(0xFF2D2041)),
+                                     const SizedBox(width: 12),
+                                     const Text('Add new', style: TextStyle(fontSize: 16, color: Color(0xFF2D2041))),
+                                   ],
+                                 ),
+                               );
+                             }
+                             final ScheduleModel item = schedule[index];
                               return Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Column(
                                     children: [
-                                      Container(
-                                        width: 16,
-                                        height: 16,
-                                        decoration: BoxDecoration(
-                                          color: item.uiColor,
-                                          shape: BoxShape.circle,
+                                      GestureDetector(
+                                        onTap: () async {
+                                          final provider = context.read<ScheduleProvider>();
+                                          await provider.updateSchedule(
+                                            item.id,
+                                            {'completed': !item.checked},
+                                          );
+                                        },
+                                        child: Container(
+                                          width: 20,
+                                          height: 20,
+                                          decoration: BoxDecoration(
+                                            color: item.checked ? const Color(0xFFF8C9E9) : Colors.white,
+                                            border: Border.all(color: const Color(0xFFDED6F3), width: 2),
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: item.checked
+                                              ? const Icon(Icons.check, size: 14, color: Color(0xFF2D2041))
+                                              : null,
                                         ),
-                                        child: item.checked
-                                            ? const Icon(Icons.check, size: 12, color: Colors.black54)
-                                            : null,
                                       ),
                                       if (index != schedule.length - 1)
                                         Container(
@@ -368,7 +392,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                         ),
                                     ],
                                   ),
-                                  const SizedBox(width: 12),
+                                  const SizedBox(width: 8),
                                   Expanded(
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -409,6 +433,17 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                       ),
                                     ),
                                   ),
+                                  IconButton(
+                                    icon: const Icon(Icons.edit, size: 20, color: Color(0xFF2D2041)),
+                                    onPressed: () => _showEditScheduleSheet(item),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.delete, size: 20, color: Color(0xFFB00020)),
+                                    onPressed: () async {
+                                      final provider = context.read<ScheduleProvider>();
+                                      await provider.deleteSchedule(item.id);
+                                    },
+                                  ),
                                 ],
                               );
                             },
@@ -430,6 +465,114 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
           // Handle tab changes if needed
         },
       ),
+    );
+  }
+
+  // ========================= ADD NEW SCHEDULE =========================
+  void _showAddScheduleSheet() {
+    _showScheduleSheet();
+  }
+
+  // ========================= EDIT SCHEDULE =========================
+  void _showEditScheduleSheet(ScheduleModel item) {
+    _showScheduleSheet(existing: item);
+  }
+
+  /// Bottom-sheet used for both add & edit.
+  void _showScheduleSheet({ScheduleModel? existing}) {
+    final titleCtrl = TextEditingController(text: existing?.label ?? '');
+    DateTime selectedDateTime = existing?.date ?? DateTime.now();
+    final isEditing = existing != null;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) {
+        return Padding(
+          padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
+          child: StatefulBuilder(
+            builder: (ctx2, setState) => Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    isEditing ? 'Edit schedule' : 'Add schedule',
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: titleCtrl,
+                    decoration: const InputDecoration(labelText: 'Title'),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      const Text('Time:'),
+                      const SizedBox(width: 12),
+                      Text(DateFormat('h:mma').format(selectedDateTime).toLowerCase()),
+                      const Spacer(),
+                      ElevatedButton(
+                        onPressed: () async {
+                          final picked = await showTimePicker(
+                            context: ctx2,
+                            initialTime: TimeOfDay.fromDateTime(selectedDateTime),
+                          );
+                          if (picked != null) {
+                            setState(() {
+                              selectedDateTime = DateTime(
+                                selectedDateTime.year,
+                                selectedDateTime.month,
+                                selectedDateTime.day,
+                                picked.hour,
+                                picked.minute,
+                              );
+                            });
+                          }
+                        },
+                        child: const Text('Pick'),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: () async {
+                      final title = titleCtrl.text.trim();
+                      if (title.isEmpty) return;
+                      final provider = context.read<ScheduleProvider>();
+                      if (isEditing) {
+                        await provider.updateSchedule(existing!.id, {
+                          'title': title,
+                          'startTime': selectedDateTime.toIso8601String(),
+                        });
+                      } else {
+                        final auth = context.read<AuthService>();
+                        final userId = await auth.getCurrentUserId();
+                        if (userId == null) return;
+                        final newModel = ScheduleModel(
+                          id: '',
+                          userId: userId,
+                          date: selectedDateTime,
+                          time: DateFormat('h:mma').format(selectedDateTime).toLowerCase(),
+                          label: title,
+                          checked: false,
+                        );
+                        await provider.addSchedule(newModel);
+                      }
+                      Navigator.pop(ctx);
+                    },
+                    child: Text(isEditing ? 'Save' : 'Add'),
+                  ),
+                  const SizedBox(height: 12),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 } 
