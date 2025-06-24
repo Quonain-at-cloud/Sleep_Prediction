@@ -114,6 +114,9 @@ class NotificationProvider with ChangeNotifier {
       final boxName = 'notifications_box_$_currentUserId';
       final box = await Hive.openBox<NotificationModel>(boxName);
       await box.add(notification);
+      // Skip duplicate notifications (same title & timestamp)
+      final duplicate = _notifications.any((n) => n.title == notification.title && n.timestamp == notification.timestamp);
+      if (duplicate) return;
       _notifications.insert(0, notification);
       _logger.i('NotificationProvider: Added notification: ${notification.title}');
       // Trigger OS level local notification

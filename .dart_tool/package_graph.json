@@ -38,6 +38,7 @@
         "sensors_plus",
         "shared_preferences",
         "socket_io_client",
+        "timezone",
         "workmanager"
       ],
       "devDependencies": [
@@ -143,6 +144,13 @@
         "flutter",
         "http",
         "path_provider"
+      ]
+    },
+    {
+      "name": "timezone",
+      "version": "0.9.4",
+      "dependencies": [
+        "path"
       ]
     },
     {
@@ -1072,13 +1080,6 @@
         "flutter",
         "flutter_plugin_android_lifecycle",
         "image_picker_platform_interface"
-      ]
-    },
-    {
-      "name": "timezone",
-      "version": "0.9.4",
-      "dependencies": [
-        "path"
       ]
     },
     {

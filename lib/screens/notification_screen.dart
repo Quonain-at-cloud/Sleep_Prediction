@@ -15,8 +15,10 @@ class NotificationScreen extends StatefulWidget {
 
 class _NotificationScreenState extends State<NotificationScreen> {
   String _formatDate(DateTime date) {
-    return '${date.month}/${date.day}/${date.year} '
-        '${date.hour}:${date.minute.toString().padLeft(2, '0')}';
+    final hour = date.hour % 12 == 0 ? 12 : date.hour % 12;
+    final minute = date.minute.toString().padLeft(2, '0');
+    final suffix = date.hour >= 12 ? 'PM' : 'AM';
+    return '${date.month}/${date.day}/${date.year} $hour:$minute $suffix';
   }
 
   @override
