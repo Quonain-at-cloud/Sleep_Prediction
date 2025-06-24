@@ -113,6 +113,18 @@ class NotificationProvider with ChangeNotifier {
     try {
       final boxName = 'notifications_box_$_currentUserId';
       final box = await Hive.openBox<NotificationModel>(boxName);
+
+      // Duplicate check: Agar notification pehle se hai, to skip karo
+      final alreadyExists = _notifications.any((n) =>
+        n.title == notification.title &&
+        n.message == notification.message &&
+        n.timestamp == notification.timestamp
+      );
+      if (alreadyExists) {
+        _logger.i('NotificationProvider: Duplicate notification skipped: ${notification.title}');
+        return;
+      }
+
       await box.add(notification);
       _notifications.insert(0, notification);
       _logger.i('NotificationProvider: Added notification: ${notification.title}');
