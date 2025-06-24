@@ -73,7 +73,13 @@ function mapSleepDataToMLInput(sleepData = {}, environmentalData = {}, dietaryDa
   if ('Physical Activity Level' in sleepData) mappedData['Physical Activity Level'] = sleepData['Physical Activity Level'];
   if ('Heart Rate' in sleepData) mappedData['Heart Rate'] = sleepData['Heart Rate'];
   if ('Daily Steps' in sleepData) mappedData['Daily Steps'] = sleepData['Daily Steps'];
-  if ('Stress Level' in sleepData) mappedData['Stress Level'] = sleepData['Stress Level'];
+  if ('Stress Level' in sleepData) {
+    mappedData['Stress Level'] = sleepData['Stress Level'];
+  } else if ('stressLevel' in sleepData) {
+    mappedData['Stress Level'] = sleepData.stressLevel;
+  } else if ('Stress_Level' in sleepData) {
+    mappedData['Stress Level'] = sleepData.Stress_Level;
+  }
 
   // From environmentalData
   if ('lightIntensity' in environmentalData) mappedData['Light Intensity'] = Number(environmentalData.lightIntensity);
@@ -99,6 +105,52 @@ function mapSleepDataToMLInput(sleepData = {}, environmentalData = {}, dietaryDa
   if ('dinnerFoodType' in dietaryData) mappedData['Dinner Food Type'] = dietaryData.dinnerFoodType;
   if ('dinnerPortionSize' in dietaryData) mappedData['Dinner Portion Size'] = dietaryData.dinnerPortionSize;
   if ('noOfMealsPerDay' in dietaryData) mappedData['No Of Meals Per Day'] = dietaryData.noOfMealsPerDay;
+  // ----------------- NEW DIETARY MAPPINGS -----------------
+  // Support the structure sent by Flutter dietary habits screen
+  if ('Meals Per Day' in dietaryData) mappedData['No Of Meals Per Day'] = dietaryData['Meals Per Day'];
+  if ('Balanced Meals' in dietaryData) mappedData['Balanced Meals'] = dietaryData['Balanced Meals'];
+  if ('Meal Timing Consistent' in dietaryData) mappedData['Meal Timing Consistent'] = dietaryData['Meal Timing Consistent'];
+  if ('Late Night Snacking' in dietaryData) mappedData['Late Night Snacking'] = dietaryData['Late Night Snacking'];
+  if ('Caffeine After Noon' in dietaryData) mappedData['Caffeine After Noon'] = dietaryData['Caffeine After Noon'];
+  if ('Alcohol Before Bed' in dietaryData) mappedData['Alcohol Before Bed'] = dietaryData['Alcohol Before Bed'];
+  if ('Heavy Meal Before Bed' in dietaryData) mappedData['Heavy Meal Before Bed'] = dietaryData['Heavy Meal Before Bed'];
+  if ('Water Intake' in dietaryData) mappedData['Water Intake'] = dietaryData['Water Intake'];
+
+  // Parse Meals array to extract per-meal details
+  if ('Meals' in dietaryData && Array.isArray(dietaryData.Meals)) {
+    dietaryData.Meals.forEach(meal => {
+      const type = (meal.Type || meal.type || '').toLowerCase();
+      const timeStr = meal.Time || meal.time || '';
+      const portion = meal['Portion Size'] || meal.portionSize;
+      const foodTypes = meal['Food Types'] || meal.foodTypes || [];
+      const isRegular = ('Is Regular' in meal) ? meal['Is Regular'] : meal.isRegular;
+
+      // Parse HH:MM string
+      const [hStr = '0', mStr = '0'] = timeStr.split(':');
+      const hour = parseInt(hStr, 10);
+      const minute = parseInt(mStr, 10);
+
+      if (type === 'breakfast') {
+        mappedData['Take Breakfast'] = isRegular;
+        mappedData['Breakfast Time Hour'] = hour;
+        mappedData['Breakfast Time Minute'] = minute;
+        if (foodTypes.length) mappedData['Breakfast Food Type'] = Array.isArray(foodTypes) ? foodTypes.join(', ') : foodTypes;
+        if (portion != null) mappedData['Breakfast Portion Size'] = portion;
+      } else if (type === 'lunch') {
+        mappedData['Do Lunch'] = isRegular;
+        mappedData['Lunch Time Hour'] = hour;
+        mappedData['Lunch Time Minute'] = minute;
+        if (foodTypes.length) mappedData['Lunch Food Type'] = Array.isArray(foodTypes) ? foodTypes.join(', ') : foodTypes;
+        if (portion != null) mappedData['Lunch Portion Size'] = portion;
+      } else if (type === 'dinner') {
+        mappedData['Have Dinner'] = isRegular;
+        mappedData['Dinner Time Hour'] = hour;
+        mappedData['Dinner Time Minute'] = minute;
+        if (foodTypes.length) mappedData['Dinner Food Type'] = Array.isArray(foodTypes) ? foodTypes.join(', ') : foodTypes;
+        if (portion != null) mappedData['Dinner Portion Size'] = portion;
+      }
+    });
+  }
 
   // Debug log for mapped values
   console.log('[ML-MAP]', mappedData);

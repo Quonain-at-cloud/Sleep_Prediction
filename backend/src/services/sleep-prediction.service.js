@@ -103,10 +103,12 @@ class SleepPredictionService {
             }
         }
 
-        // Stress level impact
+        // Stress level impact – balanced around level 3 (neutral). Lower stress boosts score; higher stress lowers it.
         const stress = this.getStressLevel(data);
         if (stress !== null) {
-        adjustments -= (stress / 10) * 1.5;
+            // Stress ranges 1-5. Difference from neutral (3) times coefficient 0.4 (~±0.8 range)
+            const diffFromNeutral = 3 - Number(stress);
+            adjustments += diffFromNeutral * 0.4;
         }
 
         // Dietary factors impact
@@ -114,6 +116,71 @@ class SleepPredictionService {
         if (dinnerHour !== null && dinnerHour >= 21) {
             adjustments -= 0.7;
         }
+
+        // ---- New dietary scoring ----
+        // Number of meals per day (ideal is 3)
+        const mealsPerDay = this.safeGet(data, 'No Of Meals Per Day');
+        if (mealsPerDay !== null) {
+            if (mealsPerDay < 3) {
+                adjustments -= 0.5;
+            } else if (mealsPerDay === 3) {
+                adjustments += 0.2;
+            } else if (mealsPerDay > 4) {
+                adjustments -= 0.3;
+            }
+        }
+
+        // Meal regularity penalties
+        const mealRegularityFlags = [
+            this.safeGet(data, 'Take Breakfast'),
+            this.safeGet(data, 'Do Lunch'),
+            this.safeGet(data, 'Have Dinner')
+        ];
+        mealRegularityFlags.forEach(flag => {
+            if (flag === false) {
+                adjustments -= 0.4;
+            }
+        });
+
+        // Portion size impact based on average across meals
+        const portionVals = [
+            this.safeGet(data, 'Breakfast Portion Size'),
+            this.safeGet(data, 'Lunch Portion Size'),
+            this.safeGet(data, 'Dinner Portion Size')
+        ].filter(v => v !== null && !isNaN(v));
+        if (portionVals.length) {
+            const avgPortion = portionVals.reduce((a, b) => a + Number(b), 0) / portionVals.length;
+            if (avgPortion > 600) {
+                adjustments -= 0.4;
+            } else if (avgPortion < 200) {
+                adjustments -= 0.3;
+            } else {
+                adjustments += 0.1;
+            }
+        }
+
+        // --- Food type (macro & beverage) impact ---
+        const foodTypeKeys = ['Breakfast Food Type', 'Lunch Food Type', 'Dinner Food Type'];
+        const allFoodTypes = [];
+        foodTypeKeys.forEach(k => {
+            const ft = this.safeGet(data, k);
+            if (ft) {
+                if (Array.isArray(ft)) {
+                    allFoodTypes.push(...ft.map(s => String(s).toLowerCase()));
+                } else {
+                    allFoodTypes.push(...String(ft).split(',').map(s => s.trim().toLowerCase()));
+                }
+            }
+        });
+        const beverageCount = allFoodTypes.filter(t => t.includes('beverage')).length;
+        const proteinCount = allFoodTypes.filter(t => t.includes('protein')).length;
+        const fatCount = allFoodTypes.filter(t => t.includes('fat')).length;
+        const fvCount = allFoodTypes.filter(t => t.includes('fruit') || t.includes('vegetable')).length;
+
+        if (beverageCount) adjustments -= 0.3;
+        if (fvCount === 0) adjustments -= 0.4; else if (fvCount >= 2) adjustments += 0.2;
+        if (proteinCount === 0) adjustments -= 0.2; else adjustments += 0.1;
+        if (fatCount > 1) adjustments -= 0.2;
 
         // Final score calculation with bounds
         const finalScore = baseScore + adjustments;
@@ -279,11 +346,25 @@ class SleepPredictionService {
 
         // Stress level
         const stress = this.getStressLevel(data);
-        const clampedStress = stress !== null ? Math.max(1, Math.min(5, stress)) : null;
-        if (clampedStress !== null && clampedStress > 2) {
-            analysisParts.push(`Your stress level is ${clampedStress}/5, which is not good for sleep. Try to reduce your stress.`);
-        } else if (clampedStress !== null && clampedStress < 2) {
-            analysisParts.push(`Your stress level is low (${clampedStress}/5), which is good for sleep.`);
+        const clampedStress = stress !== null ? Math.max(1, Math.min(5, Number(stress))) : null;
+        if (clampedStress !== null) {
+            switch (clampedStress) {
+                case 1:
+                    analysisParts.push('Your stress level is very low (1/5). This is excellent for sleep – keep it up!');
+                    break;
+                case 2:
+                    analysisParts.push('Your stress level is low (2/5). Maintaining low stress will help you fall asleep more easily.');
+                    break;
+                case 3:
+                    analysisParts.push('Your stress level is moderate (3/5). Consider light relaxation (deep breathing, gentle stretching) before bed.');
+                    break;
+                case 4:
+                    analysisParts.push('Your stress level is high (4/5). Try mindfulness, meditation, or journaling to wind down.');
+                    break;
+                case 5:
+                    analysisParts.push('Your stress level is very high (5/5) and may strongly impact sleep quality. Strongly consider structured stress-reduction techniques or professional help.');
+                    break;
+            }
         }
 
         // Dietary factors
@@ -293,6 +374,53 @@ class SleepPredictionService {
         if (dinnerHour !== null && dinnerHour >= 21) {
             analysisParts.push(`Late dinner (at ${dinnerHour}:${dinnerMinute?.toString().padStart(2, '0')}) may be affecting your digestion during sleep`);
         }
+
+        // Meal regularity analysis
+        const irregularMeals = [];
+        if (this.safeGet(data, 'Take Breakfast') === false) irregularMeals.push('breakfast');
+        if (this.safeGet(data, 'Do Lunch') === false) irregularMeals.push('lunch');
+        if (this.safeGet(data, 'Have Dinner') === false) irregularMeals.push('dinner');
+        if (irregularMeals.length) {
+            analysisParts.push(`Your ${irregularMeals.join(', ')} ${irregularMeals.length > 1 ? 'are' : 'is'} often irregular; keeping set meal times can help stabilise your body clock.`);
+        } else {
+            analysisParts.push('Your meals are taken at fairly regular times, which is beneficial for sleep.');
+        }
+
+        // Meal frequency analysis
+        const mealsPerDay = this.safeGet(data, 'No Of Meals Per Day');
+        if (mealsPerDay !== null) {
+            if (mealsPerDay < 3) {
+                analysisParts.push(`You usually have only ${mealsPerDay} meals per day; consuming 3 balanced meals can help maintain steady energy levels for better sleep.`);
+            } else if (mealsPerDay === 3) {
+                analysisParts.push('You have the recommended 3 meals per day, which supports steady metabolism.');
+            } else if (mealsPerDay > 4) {
+                analysisParts.push(`You have about ${mealsPerDay} meals a day; frequent meals close to bedtime may disrupt sleep.`);
+            }
+        }
+
+        // Food composition analysis
+        const macroFoodTypes = (() => {
+            const arr = [];
+            ['Breakfast Food Type', 'Lunch Food Type', 'Dinner Food Type'].forEach(k => {
+                const ft = this.safeGet(data, k);
+                if (ft) {
+                    if (Array.isArray(ft)) {
+                        arr.push(...ft.map(s => String(s).toLowerCase()));
+                    } else {
+                        arr.push(...String(ft).split(',').map(s => s.trim().toLowerCase()));
+                    }
+                }
+            });
+            return arr;
+        })();
+        const beverageCount2 = macroFoodTypes.filter(t=>t.includes('beverage')).length;
+        const proteinCount2 = macroFoodTypes.filter(t=>t.includes('protein')).length;
+        const fatCount2 = macroFoodTypes.filter(t=>t.includes('fat')).length;
+        const fvCount2 = macroFoodTypes.filter(t=>t.includes('fruit')|| t.includes('vegetable')).length;
+        if (beverageCount2) analysisParts.push('Frequent beverage intake (sodas/coffee) during meals might impact your sleep quality.');
+        if (proteinCount2 === 0) analysisParts.push('Your meals seem low in proteins; adequate protein supports overnight muscle repair.');
+        if (fvCount2 === 0) analysisParts.push('Your meals lack fruits & vegetables which provide sleep-supporting micronutrients.');
+        if (fatCount2 > 1) analysisParts.push('High-fat meal choices may slow digestion and disturb sleep.');
 
         // Diet variety analysis
         const breakfastType = this.safeGet(data, 'Breakfast Food Type');
@@ -457,14 +585,22 @@ class SleepPredictionService {
         // 6-bis. Stress-specific recommendations
         const stressLvl = this.getStressLevel(data);
         if (stressLvl !== null) {
-            if (stressLvl <= 2) {
-                positiveReinforcements.push("Great job keeping your stress low before bedtime!");
-            } else if (stressLvl === 3) {
-                recommendations.push("Your stress level is moderate (3/5). Light relaxation practices like breathing exercises could improve sleep.");
-            } else if (stressLvl === 4) {
-                recommendations.push("Your stress level is high (4/5). Consider structured stress-reduction techniques such as meditation or journaling before bed.");
-            } else if (stressLvl === 5) {
-                recommendations.push("Your stress level is very high (5/5). Strongly consider mindfulness, progressive muscle relaxation, or consulting a professional.");
+            switch (Number(stressLvl)) {
+                case 1:
+                    positiveReinforcements.push('Stress level very low (1/5) – perfect for quality sleep.');
+                    break;
+                case 2:
+                    positiveReinforcements.push('Stress level low (2/5). Nice! Keep practicing relaxing habits.');
+                    break;
+                case 3:
+                    recommendations.push('Stress level moderate (3/5). Try light relaxation like breathing exercises or gentle yoga to unwind.');
+                    break;
+                case 4:
+                    recommendations.push('Stress level high (4/5). Consider meditation, journaling, or a warm bath to wind down.');
+                    break;
+                case 5:
+                    recommendations.push('Stress level very high (5/5). Strongly consider mindfulness, progressive muscle relaxation, or consulting a professional.');
+                    break;
             }
         }
 
@@ -472,6 +608,82 @@ class SleepPredictionService {
         const dinnerHour = this.safeGet(data, 'Dinner Time Hour');
         if (dinnerHour !== null && dinnerHour >= 21) {
             recommendations.push("Try to have dinner earlier in the evening to improve digestion and sleep quality.");
+        }
+
+        // Meal regularity and frequency
+        const mealRegularityFlags = [
+            { label: 'breakfast', flag: this.safeGet(data, 'Take Breakfast') },
+            { label: 'lunch', flag: this.safeGet(data, 'Do Lunch') },
+            { label: 'dinner', flag: this.safeGet(data, 'Have Dinner') },
+        ];
+        mealRegularityFlags.forEach(m => {
+            if (m.flag === false) {
+                recommendations.push(`Try making your ${m.label} more regular; irregular meal timing can disturb your circadian rhythm.`);
+            }
+        });
+
+        // Portion size guidance
+        const portions = [
+            { label: 'breakfast', v: this.safeGet(data, 'Breakfast Portion Size') },
+            { label: 'lunch', v: this.safeGet(data, 'Lunch Portion Size') },
+            { label: 'dinner', v: this.safeGet(data, 'Dinner Portion Size') },
+        ].filter(p => p.v !== null);
+        if (portions.length) {
+            const avg = portions.reduce((a, b) => a + Number(b.v), 0) / portions.length;
+            if (avg > 600) {
+                recommendations.push('Consider slightly smaller meal portions to avoid discomfort during sleep.');
+            } else if (avg < 200) {
+                recommendations.push('Very small meals might leave you hungry at night; ensure you eat enough to sustain restful sleep.');
+            }
+        }
+
+        // Food type variety
+
+        // Macro/balance recommendations
+        const allFoodTypes = [];
+        ['Breakfast Food Type', 'Lunch Food Type', 'Dinner Food Type'].forEach(k => {
+            const ft = this.safeGet(data, k);
+            if (ft) {
+                if (Array.isArray(ft)) {
+                    allFoodTypes.push(...ft.map(s => String(s).toLowerCase()));
+                } else {
+                    allFoodTypes.push(...String(ft).split(',').map(s => s.trim().toLowerCase()));
+                }
+            }
+        });
+        const beverageCount = allFoodTypes.filter(t => t.includes('beverage')).length;
+        const proteinCount = allFoodTypes.filter(t => t.includes('protein')).length;
+        const fatCount = allFoodTypes.filter(t => t.includes('fat')).length;
+        const fvCount = allFoodTypes.filter(t => t.includes('fruit') || t.includes('vegetable')).length;
+
+        if (beverageCount) {
+            recommendations.push('Try limiting sugary/caffeinated beverages at meals to improve sleep quality.');
+        }
+        if (proteinCount === 0) {
+            recommendations.push('Add a source of protein to your meals for balanced nutrition that supports sleep.');
+        }
+        if (fvCount === 0) {
+            recommendations.push('Include fruits and vegetables in your meals for vitamins and minerals that aid sleep.');
+        } else if (fvCount >= 2) {
+            positiveReinforcements.push('Nice job including fruits & vegetables in your diet!');
+        }
+        if (fatCount > 1) {
+            recommendations.push('High-fat foods can slow digestion; try lighter options, especially at dinner.');
+        }
+
+        // Food type variety
+        const mealTypes = [];
+        ['Breakfast Food Type', 'Lunch Food Type', 'Dinner Food Type'].forEach(k => {
+            const v = this.safeGet(data, k);
+            if (v) mealTypes.push(v);
+        });
+        if (mealTypes.length === 3) {
+            const uniqueCnt = new Set(mealTypes.join(',').split(',').map(s => s.trim())).size;
+            if (uniqueCnt < 3) {
+                recommendations.push('Adding more variety (proteins, carbs, fruits & veggies) across meals can improve sleep-supporting micronutrients.');
+            } else {
+                positiveReinforcements.push('Great variety in your meals – balanced nutrition supports healthy sleep!');
+            }
         }
 
         // Combine recommendations and positive reinforcements

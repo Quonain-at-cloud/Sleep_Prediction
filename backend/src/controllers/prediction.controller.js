@@ -7,6 +7,7 @@ const DietaryData = require('../models/dietary-data.model');
 const axios = require('axios');
 const SleepPredictionService = require('../services/sleep-prediction.service');
 const notificationController = require('./notification.controller');
+const { generateTodaySchedule } = require('../services/schedule-generator.service');
 
 // Initialize the sleep prediction service
 const sleepPredictionService = new SleepPredictionService();
