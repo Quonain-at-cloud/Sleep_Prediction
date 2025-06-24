@@ -33,14 +33,38 @@ class ScheduleModel {
   }
 
   Map<String, dynamic> toJson() {
+    // Combine date & time into a single DateTime for the API
+    final DateTime _startDateTime = _combineDateAndTime();
     return {
       'userId': userId,
       'title': label,
-      'startTime': date.toIso8601String(),
-      'endTime': null, // optional, not used in UI
+      'startTime': _startDateTime.toIso8601String(),
+      'endTime': _startDateTime.toIso8601String(),
       if (type != null) 'type': type,
       'completed': checked,
     };
+  }
+
+  // Merge the separate [date] (calendar day) and [time] (human string)
+  // into a single DateTime (local) so that we can send ISO strings the
+  // backend validator accepts.
+  DateTime _combineDateAndTime() {
+    final timeStr = time.toLowerCase().trim();
+    final regex = RegExp(r'^(\d{1,2})(?::(\d{2}))?\s*(am|pm)?');
+    final match = regex.firstMatch(timeStr);
+    int hour = 0;
+    int minute = 0;
+    if (match != null) {
+      hour = int.parse(match.group(1)!);
+      minute = match.group(2) != null ? int.parse(match.group(2)!) : 0;
+      final ampm = match.group(3);
+      if (ampm == 'pm' && hour != 12) {
+        hour += 12;
+      } else if (ampm == 'am' && hour == 12) {
+        hour = 0;
+      }
+    }
+    return DateTime(date.year, date.month, date.day, hour, minute);
   }
 
   /// UI background colour depending on completion state
