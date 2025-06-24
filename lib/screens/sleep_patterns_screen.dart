@@ -214,6 +214,9 @@ class _SleepPatternsScreenState extends State<SleepPatternsScreen> {
   }
 
   Widget _buildStepper(String label, int value, void Function(int) onChanged, {String? subtitle, int min = 0, int max = 100, bool showIcons = true, String? hintText}) {
+    // Create a controller that maintains the current value
+    final TextEditingController controller = TextEditingController(text: value.toString());
+    
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 1),
       child: Row(
@@ -261,7 +264,7 @@ class _SleepPatternsScreenState extends State<SleepPatternsScreen> {
                   children: [
                     Expanded(
                       child: TextField(
-                        controller: TextEditingController(text: value.toString()),
+                        controller: controller,
                         keyboardType: TextInputType.number,
                         textAlign: TextAlign.center,
                         style: GoogleFonts.montaga(
@@ -282,10 +285,19 @@ class _SleepPatternsScreenState extends State<SleepPatternsScreen> {
                           FilteringTextInputFormatter.digitsOnly,
                           FilteringTextInputFormatter.allow(RegExp(r'^[1-5]?')),
                         ],
+                        onChanged: (val) {
+                          final int? newValue = int.tryParse(val);
+                          if (newValue != null && newValue >= min && newValue <= max) {
+                            onChanged(newValue);
+                          }
+                        },
                         onSubmitted: (val) {
                           final int? newValue = int.tryParse(val);
                           if (newValue != null && newValue >= min && newValue <= max) {
                             onChanged(newValue);
+                          } else {
+                            // Reset to current value if invalid
+                            controller.text = value.toString();
                           }
                         },
                       ),
@@ -300,7 +312,10 @@ class _SleepPatternsScreenState extends State<SleepPatternsScreen> {
                             offset: const Offset(0, 6),
                             child: GestureDetector(
                               onTap: () {
-                                if (value < max) onChanged(value + 1);
+                                if (value < max) {
+                                  onChanged(value + 1);
+                                  controller.text = (value + 1).toString();
+                                }
                               },
                               child: Icon(
                                 Icons.expand_less,
@@ -313,7 +328,10 @@ class _SleepPatternsScreenState extends State<SleepPatternsScreen> {
                             offset: const Offset(0, -6),
                             child: GestureDetector(
                               onTap: () {
-                                if (value > min) onChanged(value - 1);
+                                if (value > min) {
+                                  onChanged(value - 1);
+                                  controller.text = (value - 1).toString();
+                                }
                               },
                               child: Icon(
                                 Icons.expand_more,

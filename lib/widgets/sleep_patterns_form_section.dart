@@ -234,6 +234,9 @@ class SleepPatternsFormSectionState extends State<SleepPatternsFormSection> {
   }
 
   Widget _buildStepper(String label, int value, void Function(int) onChanged, {String? subtitle, int min = 0, int max = 100, bool showIcons = true, String? hintText}) {
+     // Create a controller that maintains the current value
+     final TextEditingController controller = TextEditingController(text: value.toString());
+     
      return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
@@ -252,16 +255,50 @@ class SleepPatternsFormSectionState extends State<SleepPatternsFormSection> {
             padding: const EdgeInsets.only(left: 15, right: 10),
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               Expanded(child: TextField(
-                controller: TextEditingController(text: value.toString())..selection = TextSelection.fromPosition(TextPosition(offset: value.toString().length)),
+                controller: controller,
                 keyboardType: TextInputType.number, textAlign: TextAlign.center, style: GoogleFonts.montaga(fontSize: 22, color: const Color(0xFF31244C)),
                 decoration: InputDecoration(border: InputBorder.none, isDense: true, contentPadding: EdgeInsets.zero, hintText: hintText, hintStyle: GoogleFonts.montaga(fontSize: 18, color: const Color(0xFF31244C).withOpacity(0.5))),
                 inputFormatters: showIcons ? [FilteringTextInputFormatter.digitsOnly] : [FilteringTextInputFormatter.digitsOnly, FilteringTextInputFormatter.allow(RegExp(r'^[1-5]?'))],
-                onChanged: (val) { final int? newValue = int.tryParse(val); if (newValue != null && newValue >= min && newValue <= max) { onChanged(newValue); } else if (val.isEmpty && min == 0) {onChanged(0); } else { /* Optionally revert to old value or show error */ } },
+                onChanged: (val) { 
+                  final int? newValue = int.tryParse(val); 
+                  if (newValue != null && newValue >= min && newValue <= max) { 
+                    onChanged(newValue); 
+                  } else if (val.isEmpty && min == 0) {
+                    onChanged(0); 
+                  } else { 
+                    /* Optionally revert to old value or show error */ 
+                  } 
+                },
+                onSubmitted: (val) {
+                  final int? newValue = int.tryParse(val);
+                  if (newValue != null && newValue >= min && newValue <= max) {
+                    onChanged(newValue);
+                  } else {
+                    // Reset to current value if invalid
+                    controller.text = value.toString();
+                  }
+                },
               )),
               if (showIcons) ...[
                 Column(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.center, children: [
-                  Transform.translate(offset: const Offset(0, 6), child: GestureDetector(onTap: () { if (value < max) onChanged(value + 1); }, child: Icon(Icons.expand_less, size: 22, color: const Color(0xFF31244C)))),
-                  Transform.translate(offset: const Offset(0, -6), child: GestureDetector(onTap: () { if (value > min) onChanged(value - 1); }, child: Icon(Icons.expand_more, size: 22, color: const Color(0xFF31244C)))),
+                  Transform.translate(offset: const Offset(0, 6), child: GestureDetector(
+                    onTap: () { 
+                      if (value < max) {
+                        onChanged(value + 1);
+                        controller.text = (value + 1).toString();
+                      }
+                    }, 
+                    child: Icon(Icons.expand_less, size: 22, color: const Color(0xFF31244C))
+                  )),
+                  Transform.translate(offset: const Offset(0, -6), child: GestureDetector(
+                    onTap: () { 
+                      if (value > min) {
+                        onChanged(value - 1);
+                        controller.text = (value - 1).toString();
+                      }
+                    }, 
+                    child: Icon(Icons.expand_more, size: 22, color: const Color(0xFF31244C))
+                  )),
                 ]),
               ]
             ]),
