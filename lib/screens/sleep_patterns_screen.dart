@@ -44,6 +44,8 @@ class _SleepPatternsScreenState extends State<SleepPatternsScreen> {
     
     // Check if user is first time user (missing gender or age)
     _checkIfFirstTimeUser();
+    // Compute initial average based on default times
+    _updateAverageSleepDuration();
   }
   
   @override
@@ -84,7 +86,7 @@ class _SleepPatternsScreenState extends State<SleepPatternsScreen> {
   TimeOfDay _weekdayWakeup = const TimeOfDay(hour: 9, minute: 0);
   TimeOfDay _weekendBedtime = const TimeOfDay(hour: 0, minute: 0);
   TimeOfDay _weekendWakeup = const TimeOfDay(hour: 10, minute: 0);
-  int _sleepDuration = 6;
+  double _sleepDuration = 6.0;
   int _awakenings = 3;
   int _rateSleepQuality = 1;
   int _relaxedBeforeSleep = 1;
@@ -145,6 +147,7 @@ class _SleepPatternsScreenState extends State<SleepPatternsScreen> {
             _weekendWakeup = picked;
             break;
         }
+        _updateAverageSleepDuration();
       });
     }
   }
@@ -351,6 +354,66 @@ class _SleepPatternsScreenState extends State<SleepPatternsScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  // Helper method to calculate duration (in hours) between two TimeOfDay values
+  double _calculateDurationHours(TimeOfDay start, TimeOfDay end) {
+    final now = DateTime.now();
+    DateTime startDate = DateTime(now.year, now.month, now.day, start.hour, start.minute);
+    DateTime endDate   = DateTime(now.year, now.month, now.day, end.hour, end.minute);
+
+    // If wake-up happens the next day, add a day to endDate
+    if (!endDate.isAfter(startDate)) {
+      endDate = endDate.add(const Duration(days: 1));
+    }
+    return endDate.difference(startDate).inMinutes / 60.0;
+  }
+
+  // Re-calculate and update the average sleep duration
+  // Formula: (weekdayHours * 5 + weekendHours * 2) / 7
+  void _updateAverageSleepDuration() {
+    final double weekdayHours = _calculateDurationHours(_weekdayBedtime, _weekdayWakeup);
+    final double weekendHours = _calculateDurationHours(_weekendBedtime, _weekendWakeup);
+
+    final double totalForWeek = (weekdayHours * 5) + (weekendHours * 2);
+    final double average = totalForWeek / 7.0;
+
+    setState(() {
+      _sleepDuration = double.parse(average.toStringAsFixed(1)); // keep one decimal place
+    });
+  }
+
+  // Read-only UI row that mirrors the existing input style
+  Widget _buildAverageDurationDisplay(String label, double value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: GoogleFonts.montaga(
+            fontSize: 16,
+            color: const Color(0xFF31244C),
+          ),
+        ),
+        Container(
+          width: 100,
+          height: 46,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            border: Border.all(color: const Color(0xFF31244C), width: 1),
+            borderRadius: BorderRadius.circular(12),
+            color: Colors.white,
+          ),
+          child: Text(
+            value.toStringAsFixed(1),
+            style: GoogleFonts.montaga(
+              fontSize: 22,
+              color: const Color(0xFF31244C),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -649,7 +712,7 @@ class _SleepPatternsScreenState extends State<SleepPatternsScreen> {
                       const SizedBox(height: 16),
                       _buildTimeSelector('Weekend wake-up', 'weekendWakeup'),
                       const SizedBox(height: 16),
-                      _buildStepper('Average Sleep Duration', _sleepDuration, (val) => setState(() => _sleepDuration = val)),
+                      _buildAverageDurationDisplay('Average Sleep Duration', _sleepDuration),
                       const SizedBox(height: 16),
                       _buildStepper('Awakenings during night', _awakenings, (val) => setState(() => _awakenings = val)),
                       const SizedBox(height: 16),

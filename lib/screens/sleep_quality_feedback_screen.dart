@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/custom_bottom_navigation.dart';
+import 'sleep_patterns_screen.dart';
 import '../utils/app_theme.dart';
 import '../widgets/custom_profile_drawer.dart';
 import 'package:flutter/services.dart';
@@ -126,8 +127,12 @@ class _SleepQualityFeedbackScreenState extends State<SleepQualityFeedbackScreen>
                       width: 250,
                       child: ElevatedButton(
                         onPressed: () {
-                          // Handle feedback submission
-                          Navigator.pop(context);
+                          // Handle feedback submission and navigate to Sleep Patterns screen
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (_) => const SleepPatternsScreen()),
+                            (route) => false,
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF5C5470),
