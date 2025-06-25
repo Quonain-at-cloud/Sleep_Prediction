@@ -2,6 +2,91 @@ class SleepPredictionService {
     constructor() {
         // No external dependencies needed
     }
+    
+    // Format time as HH:MM
+    formatTime(h, m) {
+        return `${h}:${m.toString().padStart(2, '0')}`;
+    }
+    
+    // Enhanced Meal Timing Analysis
+    analyzeMealTiming(mealType, hour, minute, data) {
+        if (hour === null || minute === null) return null;
+        
+        const mealTime = hour + (minute / 60);
+        const wakeupHour = this.safeGet(data, 'Weekday Wake-up Hour') || 7;
+        const wakeupMinute = this.safeGet(data, 'Weekday Wake-up Minute') || 0;
+        const wakeupTime = wakeupHour + (wakeupMinute / 60);
+        
+        if (mealType === 'breakfast') {
+            const timeAfterWakeup = mealTime - wakeupTime;
+            if (timeAfterWakeup < 0) {
+                return `Breakfast at ${this.formatTime(hour, minute)} is before waking up - try eating within 2 hours of waking.`;
+            } else if (timeAfterWakeup > 2) {
+                return `Breakfast at ${this.formatTime(hour, minute)} is quite late (${Math.round(timeAfterWakeup*10)/10}h after waking).`;
+            } else {
+                return `Good breakfast timing at ${this.formatTime(hour, minute)} (${Math.round(timeAfterWakeup*10)/10}h after waking).`;
+            }
+        } else if (mealType === 'lunch') {
+            if (mealTime < 11) {
+                return `Early lunch at ${this.formatTime(hour, minute)} - consider having it between 12-2pm for better digestion.`;
+            } else if (mealTime > 15) {
+                return `Late lunch at ${this.formatTime(hour, minute)} - try to have it before 3pm.`;
+            } else {
+                return `Good lunch timing at ${this.formatTime(hour, minute)}.`;
+            }
+        } else if (mealType === 'dinner') {
+            if (mealTime < 17) {
+                return `Early dinner at ${this.formatTime(hour, minute)} - great for digestion.`;
+            } else if (mealTime >= 21) {
+                return `Late dinner at ${this.formatTime(hour, minute)} - try to finish 3 hours before bedtime.`;
+            } else if (mealTime >= 19) {
+                return `Dinner at ${this.formatTime(hour, minute)} - slightly late, but still within good range.`;
+            } else {
+                return `Ideal dinner timing at ${this.formatTime(hour, minute)}.`;
+            }
+        }
+        return null;
+    }
+    
+    // Analyze portion size (1-5 scale where 3 is ideal)
+    analyzePortionSize(mealType, size) {
+        if (size === null || size === undefined) return null;
+        
+        // Convert to number if it's a string
+        const portionSize = typeof size === 'string' ? parseFloat(size) : size;
+        if (isNaN(portionSize)) return null;
+        
+        // Convert from grams to 1-5 scale if needed
+        const normalizedSize = portionSize > 10 ? 
+            Math.min(5, Math.max(1, Math.round(portionSize / 100))) : 
+            portionSize;
+        
+        const sizeRanges = [
+            { max: 1.5, label: 'very small' },
+            { max: 2.5, label: 'small' },
+            { max: 3.5, label: 'moderate' },
+            { max: 4.5, label: 'large' },
+            { max: 5, label: 'very large' }
+        ];
+        
+        let portionDesc = 'moderate';
+        for (const range of sizeRanges) {
+            if (normalizedSize <= range.max) {
+                portionDesc = range.label;
+                break;
+            }
+        }
+        
+        const portionFeedback = {
+            'very small': `Your ${mealType} portion is very small. Consider increasing it for better energy.`,
+            'small': `Your ${mealType} portion is small. A slightly larger portion might be more satisfying.`,
+            'moderate': `Your ${mealType} portion is moderate - great for balanced nutrition.`,
+            'large': `Your ${mealType} portion is large. Consider slightly smaller portions for better digestion.`,
+            'very large': `Your ${mealType} portion is very large. Large meals can disrupt sleep quality.`
+        };
+        
+        return portionFeedback[portionDesc] || '';
+    }
 
     // Helper to safely get a field or return null
     safeGet(data, key) {
@@ -127,6 +212,94 @@ class SleepPredictionService {
                 adjustments += 0.2;
             } else if (mealsPerDay > 4) {
                 adjustments -= 0.3;
+            }
+        }
+
+        // Meal regularity, timing and portion size analysis
+        const meals = [
+            { 
+                type: 'breakfast', 
+                hasMeal: this.safeGet(data, 'Take Breakfast'),
+                hour: this.safeGet(data, 'Breakfast Time Hour'),
+                minute: this.safeGet(data, 'Breakfast Time Minute'),
+                portion: this.safeGet(data, 'Breakfast Portion Size')
+            },
+            { 
+                type: 'lunch', 
+                hasMeal: this.safeGet(data, 'Do Lunch'),
+                hour: this.safeGet(data, 'Lunch Time Hour'),
+                minute: this.safeGet(data, 'Lunch Time Minute'),
+                portion: this.safeGet(data, 'Lunch Portion Size')
+            },
+            { 
+                type: 'dinner', 
+                hasMeal: this.safeGet(data, 'Have Dinner'),
+                hour: this.safeGet(data, 'Dinner Time Hour'),
+                minute: this.safeGet(data, 'Dinner Time Minute'),
+                portion: this.safeGet(data, 'Dinner Portion Size')
+            }
+        ];
+
+        // Analyze each meal
+        meals.forEach(meal => {
+            // Penalize for skipped meals
+            if (meal.hasMeal === false) {
+                adjustments -= 0.4;
+                return;
+            }
+
+            // Analyze meal timing
+            if (meal.hour !== null) {
+                const mealTime = meal.hour + (meal.minute || 0) / 60;
+                
+                if (meal.type === 'dinner') {
+                    // Dinner should be 2-3 hours before bedtime
+                    if (mealTime >= 21) { // After 9 PM
+                        adjustments -= 0.5;
+                    } else if (mealTime >= 20) { // 8-9 PM
+                        adjustments -= 0.2;
+                    } else if (mealTime >= 18) { // 6-8 PM - ideal
+                        adjustments += 0.3;
+                    }
+                } else if (meal.type === 'breakfast') {
+                    // Breakfast should be within 2 hours of waking up
+                    const wakeupHour = this.safeGet(data, 'Weekday Wake-up Hour') || 7;
+                    const wakeupMinute = this.safeGet(data, 'Weekday Wake-up Minute') || 0;
+                    const wakeupTime = wakeupHour + (wakeupMinute / 60);
+                    
+                    if (mealTime - wakeupTime > 2) { // More than 2 hours after waking
+                        adjustments -= 0.2;
+                    } else if (mealTime - wakeupTime < 0) { // Before waking up (skipped)
+                        adjustments -= 0.3;
+                    } else {
+                        adjustments += 0.2; // Good timing
+                    }
+                }
+            }
+
+            // Analyze portion size (assuming 1-5 scale where 3 is ideal)
+            if (meal.portion !== null) {
+                if (meal.portion <= 1) {
+                    adjustments -= 0.3; // Too small
+                } else if (meal.portion >= 5) {
+                    adjustments -= 0.4; // Too large
+                } else if (meal.portion === 3) {
+                    adjustments += 0.2; // Ideal
+                }
+            }
+        });
+
+        // Calculate average portion size for overall impact
+        const portions = meals
+            .filter(m => m.portion !== null)
+            .map(m => m.portion);
+            
+        if (portions.length > 0) {
+            const avgPortion = portions.reduce((a, b) => a + b, 0) / portions.length;
+            if (avgPortion < 2) {
+                adjustments -= 0.2; // Overall portions too small
+            } else if (avgPortion > 4) {
+                adjustments -= 0.3; // Overall portions too large
             }
         }
 
@@ -367,15 +540,85 @@ class SleepPredictionService {
             }
         }
 
-        // Dietary factors
-        const dinnerHour = this.safeGet(data, 'Dinner Time Hour');
-        if (dinnerHour !== null && !this.safeGet(data, 'Dinner Time Minute')) throw new Error('Missing required field: Dinner Time Minute');
-        const dinnerMinute = this.safeGet(data, 'Dinner Time Minute');
-        if (dinnerHour !== null && dinnerHour >= 21) {
-            analysisParts.push(`Late dinner (at ${dinnerHour}:${dinnerMinute?.toString().padStart(2, '0')}) may be affecting your digestion during sleep`);
+        // Local format time helper
+        const formatTime = (h, m) => `${h}:${m.toString().padStart(2, '0')}`;
+
+        // Helper to parse time string (HH:MM) to {hour, minute}
+        const parseTimeString = (timeStr) => {
+            if (!timeStr) return { hour: null, minute: null };
+            const [hour, minute] = timeStr.split(':').map(Number);
+            return { hour, minute };
+        };
+
+        // Process meals from both Meals array and individual fields
+        const mealData = [];
+        const mealsArray = this.safeGet(data, 'Meals') || [];
+        
+        // Process meals from Meals array if available
+        mealsArray.forEach(meal => {
+            if (meal && meal.Type) {
+                const mealType = meal.Type.toLowerCase();
+                const time = parseTimeString(meal.Time);
+                const portionSize = typeof meal['Portion Size'] === 'number' ? meal['Portion Size'] : null;
+                
+                mealData.push({
+                    type: mealType,
+                    hour: time.hour,
+                    minute: time.minute,
+                    portionSize: portionSize,
+                    hasMeal: true
+                });
+            }
+        });
+
+        // If no meals from array, fall back to individual fields
+        if (mealData.length === 0) {
+            ['Breakfast', 'Lunch', 'Dinner'].forEach(mealType => {
+                const hasMeal = this.safeGet(data, `Take ${mealType}`) !== false;
+                const hour = this.safeGet(data, `${mealType} Time Hour`);
+                const minute = this.safeGet(data, `${mealType} Time Minute`);
+                const portionSize = this.safeGet(data, `${mealType} Portion Size`);
+                
+                mealData.push({
+                    type: mealType.toLowerCase(),
+                    hour: hour,
+                    minute: minute,
+                    portionSize: portionSize,
+                    hasMeal: hasMeal
+                });
+            });
         }
 
-        // Meal regularity analysis
+        // Analyze each meal's timing and portion size
+        const mealAnalyses = [];
+        
+        mealData.forEach(meal => {
+            // Only process if the meal was actually consumed
+            if (!meal.hasMeal) return;
+            
+            // Process meal timing
+            if (meal.hour !== null && meal.minute !== null) {
+                const timingAnalysis = this.analyzeMealTiming(meal.type, meal.hour, meal.minute, data);
+                if (timingAnalysis) {
+                    mealAnalyses.push(timingAnalysis);
+                }
+            }
+            
+            // Process portion size if available
+            if (meal.portionSize !== null && meal.portionSize !== undefined) {
+                const portionAnalysis = this.analyzePortionSize(meal.type, meal.portionSize);
+                if (portionAnalysis) {
+                    mealAnalyses.push(portionAnalysis);
+                }
+            }
+        });
+        
+        // Add all meal analyses to results
+        if (mealAnalyses.length > 0) {
+            analysisParts.push(...mealAnalyses);
+        }
+
+        // Meal consistency and frequency
         const irregularMeals = [];
         if (this.safeGet(data, 'Take Breakfast') === false) irregularMeals.push('breakfast');
         if (this.safeGet(data, 'Do Lunch') === false) irregularMeals.push('lunch');
@@ -504,6 +747,7 @@ class SleepPredictionService {
     generateRecommendations(data, userName) {
         const recommendations = [];
         const positiveReinforcements = [];
+        const analysisParts = [];
 
         // 1. Sleep Schedule Consistency
         const weekdayBedtime = (this.safeGet(data, 'Weekday Bedtime Hour') || 0) + (this.safeGet(data, 'Weekday Bedtime Minute') || 0) / 60;
@@ -537,25 +781,27 @@ class SleepPredictionService {
         }
 
         // 4. Environmental Factors
-        const temp = this.safeGet(data, 'Temperature');
-        if (temp !== null && temp > 32) {
-            recommendations.push(`Your room is very hot (${temp}°C)! This can severely disrupt sleep. Aim for a cool 16-20°C.`);
-        } else if (temp !== null && temp > 26) {
-            recommendations.push(`Your room is a bit warm (${temp}°C). Cooling it down to 16-20°C can lead to deeper, more restorative sleep.`);
-        } else if (temp !== null && temp < 16) {
-            recommendations.push(`Your room is cold (${temp}°C). A warmer temperature of 16-20°C is better for sleep comfort.`);
+        const roomTemp = this.safeGet(data, 'Temperature');
+        if (roomTemp !== null) {
+            if (roomTemp > 32) {
+                recommendations.push(`Your room is very hot (${roomTemp}°C)! This can severely disrupt sleep. Aim for a cool 16-20°C.`);
+            } else if (roomTemp > 26) {
+                recommendations.push(`Your room is a bit warm (${roomTemp}°C). Cooling it down to 16-20°C can lead to deeper, more restorative sleep.`);
+            } else if (roomTemp < 16) {
+                recommendations.push(`Your room is cold (${roomTemp}°C). A warmer temperature of 16-20°C is better for sleep comfort.`);
+            }
         }
 
         const light = this.safeGet(data, 'Light Intensity');
         if (light !== null) {
-        if (light < 10) {
-            recommendations.push(`Your room is already dark (${light} lux), no need to reduce light further.`);
-        } else if (light < 50) {
-            recommendations.push(`Your room is dim (${light} lux), good for winding down before sleep.`);
-        } else if (light <= 200) {
-            recommendations.push(`Try to reduce light below 50 lux for better sleep. Current: ${light} lux.`);
-        } else {
-            recommendations.push(`Strongly recommended to reduce light for optimal sleep. Current: ${light} lux.`);
+            if (light < 10) {
+                recommendations.push(`Your room is already dark (${light} lux), no need to reduce light further.`);
+            } else if (light < 50) {
+                recommendations.push(`Your room is dim (${light} lux), good for winding down before sleep.`);
+            } else if (light <= 200) {
+                recommendations.push(`Try to reduce light below 50 lux for better sleep. Current: ${light} lux.`);
+            } else {
+                recommendations.push(`Strongly recommended to reduce light for optimal sleep. Current: ${light} lux.`);
             }
         }
 
@@ -604,42 +850,86 @@ class SleepPredictionService {
             }
         }
 
-        // 6. Diet
-        const dinnerHour = this.safeGet(data, 'Dinner Time Hour');
-        if (dinnerHour !== null && dinnerHour >= 21) {
-            recommendations.push("Try to have dinner earlier in the evening to improve digestion and sleep quality.");
-        }
-
-        // Meal regularity and frequency
-        const mealRegularityFlags = [
-            { label: 'breakfast', flag: this.safeGet(data, 'Take Breakfast') },
-            { label: 'lunch', flag: this.safeGet(data, 'Do Lunch') },
-            { label: 'dinner', flag: this.safeGet(data, 'Have Dinner') },
+        // 6. Diet - Meal Analysis
+        const meals = [
+            { 
+                label: 'breakfast', 
+                hasMeal: this.safeGet(data, 'Take Breakfast'),
+                hour: this.safeGet(data, 'Breakfast Time Hour'),
+                minute: this.safeGet(data, 'Breakfast Time Minute'),
+                portion: this.safeGet(data, 'Breakfast Portion Size')
+            },
+            { 
+                label: 'lunch', 
+                hasMeal: this.safeGet(data, 'Do Lunch'),
+                hour: this.safeGet(data, 'Lunch Time Hour'),
+                minute: this.safeGet(data, 'Lunch Time Minute'),
+                portion: this.safeGet(data, 'Lunch Portion Size')
+            },
+            { 
+                label: 'dinner', 
+                hasMeal: this.safeGet(data, 'Have Dinner'),
+                hour: this.safeGet(data, 'Dinner Time Hour'),
+                minute: this.safeGet(data, 'Dinner Time Minute'),
+                portion: this.safeGet(data, 'Dinner Portion Size')
+            }
         ];
-        mealRegularityFlags.forEach(m => {
-            if (m.flag === false) {
-                recommendations.push(`Try making your ${m.label} more regular; irregular meal timing can disturb your circadian rhythm.`);
+
+        // Analyze each meal's timing and portion
+        meals.forEach(meal => {
+            if (meal.hasMeal === false) {
+                recommendations.push(`Consider having ${meal.label} regularly. Skipping meals can disrupt your metabolism and sleep patterns.`);
+                return;
+            }
+
+            // Analyze meal timing
+            if (meal.hour !== null) {
+                const mealTime = meal.hour + (meal.minute || 0) / 60;
+                
+                if (meal.label === 'dinner') {
+                    // Dinner should be 2-3 hours before bedtime
+                    if (mealTime >= 21) { // After 9 PM
+                        recommendations.push("Having dinner after 9 PM can disrupt your sleep. Try to finish dinner by 8 PM for better digestion.");
+                    } else if (mealTime >= 20) { // 8-9 PM
+                        recommendations.push("Consider having dinner slightly earlier (before 8 PM) to allow for better digestion before sleep.");
+                    } else if (mealTime >= 18) { // 6-8 PM
+                        positiveReinforcements.push("Great job having dinner at an optimal time for good sleep!");
+                    }
+                } else if (meal.label === 'breakfast') {
+                    // Breakfast should be within 2 hours of waking up
+                    const wakeupHour = this.safeGet(data, 'Weekday Wake-up Hour') || 7;
+                    const wakeupMinute = this.safeGet(data, 'Weekday Wake-up Minute') || 0;
+                    const wakeupTime = wakeupHour + (wakeupMinute / 60);
+                    
+                    if (mealTime - wakeupTime > 2) { // More than 2 hours after waking
+                        recommendations.push("Try to have breakfast within 2 hours of waking up to regulate your metabolism.");
+                    } else if (mealTime - wakeupTime < 0) { // Before waking up (skipped)
+                        recommendations.push("Make sure to have breakfast after waking up to kickstart your metabolism.");
+                    } else {
+                        positiveReinforcements.push("Good job having breakfast at an optimal time after waking!");
+                    }
+                }
+            }
+
+            // Analyze portion size (converting to 1-5 scale if needed)
+            if (meal.portion !== null) {
+                // Convert portion size to 1-5 scale if it's in grams (assuming 400g is moderate/3)
+                let portionSize = meal.portion;
+                if (portionSize > 10) { // Likely in grams, convert to 1-5 scale
+                    portionSize = Math.min(5, Math.max(1, Math.round(portionSize / 100)));
+                }
+                
+                if (portionSize <= 1) {
+                    recommendations.push(`Your ${meal.label} portion seems too small. Try increasing it for better energy levels.`);
+                } else if (portionSize >= 5) {
+                    recommendations.push(`Your ${meal.label} portion seems quite large. Consider slightly smaller portions for better digestion.`);
+                } else if (portionSize === 3) {
+                    positiveReinforcements.push(`Your ${meal.label} portion size is just right!`);
+                }
             }
         });
 
-        // Portion size guidance
-        const portions = [
-            { label: 'breakfast', v: this.safeGet(data, 'Breakfast Portion Size') },
-            { label: 'lunch', v: this.safeGet(data, 'Lunch Portion Size') },
-            { label: 'dinner', v: this.safeGet(data, 'Dinner Portion Size') },
-        ].filter(p => p.v !== null);
-        if (portions.length) {
-            const avg = portions.reduce((a, b) => a + Number(b.v), 0) / portions.length;
-            if (avg > 600) {
-                recommendations.push('Consider slightly smaller meal portions to avoid discomfort during sleep.');
-            } else if (avg < 200) {
-                recommendations.push('Very small meals might leave you hungry at night; ensure you eat enough to sustain restful sleep.');
-            }
-        }
-
-        // Food type variety
-
-        // Macro/balance recommendations
+        // Food type variety and macro/balance recommendations
         const allFoodTypes = [];
         ['Breakfast Food Type', 'Lunch Food Type', 'Dinner Food Type'].forEach(k => {
             const ft = this.safeGet(data, k);
@@ -651,6 +941,7 @@ class SleepPredictionService {
                 }
             }
         });
+        
         const beverageCount = allFoodTypes.filter(t => t.includes('beverage')).length;
         const proteinCount = allFoodTypes.filter(t => t.includes('protein')).length;
         const fatCount = allFoodTypes.filter(t => t.includes('fat')).length;
@@ -675,10 +966,11 @@ class SleepPredictionService {
         const mealTypes = [];
         ['Breakfast Food Type', 'Lunch Food Type', 'Dinner Food Type'].forEach(k => {
             const v = this.safeGet(data, k);
-            if (v) mealTypes.push(v);
+            if (v) mealTypes.push(...(Array.isArray(v) ? v : [v]));
         });
-        if (mealTypes.length === 3) {
-            const uniqueCnt = new Set(mealTypes.join(',').split(',').map(s => s.trim())).size;
+        
+        if (mealTypes.length > 0) {
+            const uniqueCnt = new Set(mealTypes.map(s => String(s).trim().toLowerCase())).size;
             if (uniqueCnt < 3) {
                 recommendations.push('Adding more variety (proteins, carbs, fruits & veggies) across meals can improve sleep-supporting micronutrients.');
             } else {
@@ -686,19 +978,66 @@ class SleepPredictionService {
             }
         }
 
-        // Combine recommendations and positive reinforcements
-        return recommendations.concat(positiveReinforcements);
+        // Keep all recommendations but consolidate similar portion size ones
+        let actionableRecommendations = [...recommendations];
+        
+        // Check if there are multiple portion size recommendations
+        const portionRecs = recommendations.filter(rec => rec.includes('portion'));
+        if (portionRecs.length > 1) {
+            // Remove individual portion recommendations
+            actionableRecommendations = actionableRecommendations.filter(rec => !rec.includes('portion'));
+            // Add a consolidated portion recommendation
+            actionableRecommendations.push('Consider adjusting your meal portion sizes for better digestion and energy levels.');
+        }
+
+        // Generate detailed analysis
+        let detailedAnalysis = this.generateDetailedAnalysis(data);
+        
+        // Ensure detailedAnalysis is an array
+        if (!Array.isArray(detailedAnalysis)) {
+            detailedAnalysis = [detailedAnalysis];
+        }
+        
+        // Add any meal-related analysis from generateDetailedAnalysis
+        const mealAnalysis = [];
+        
+        // Process each meal
+        const mealAnalyses = [];
+        meals.forEach(meal => {
+            if (meal.hasMeal && (meal.hour !== null || meal.minute !== null)) {
+                const timingAnalysis = this.analyzeMealTiming(meal.label, meal.hour, meal.minute, data);
+                if (timingAnalysis) {
+                    mealAnalyses.push(timingAnalysis);
+                }
+            }
+
+            if (meal.hasMeal && meal.portion !== null) {
+                const portionAnalysis = this.analyzePortionSize(meal.label, meal.portion);
+                if (portionAnalysis) {
+                    mealAnalyses.push(portionAnalysis);
+                }
+            }
+        });
+        
+        // Combine all analysis parts
+        const finalAnalysis = [...detailedAnalysis, ...mealAnalyses];
+        
+        return {
+            prediction: this.generatePredictionSummary(this.calculatePredictionScore(data)),
+            detailedAnalysis: finalAnalysis,
+            recommendations: actionableRecommendations,
+            positiveReinforcements: positiveReinforcements
+        };
     }
 
     // Calculate contributing factors
     calculateContributingFactors(data) {
-        // Five normalized contributing factors between 0 and 1
         const factors = {
             'Night Awakenings': 0,
             'Temperature': 0,
             'Noise': 0,
             'Light Intensity': 0,
-            'Dietary Variety': 0,
+            'Dietary Variety': 0
         };
 
         // 1. Night Awakenings – worst if ≥5
@@ -744,153 +1083,56 @@ class SleepPredictionService {
 
         return factors;
     }
-        /* LEGACY FACTOR BLOCK START -- commented out to avoid duplicate code
-        /* LEGACY BLOCK START
-        /*
-        /*
-// List all possible factors
-        const allFactors = [
-            'Night Awakenings',
-            'Device Use',
-            'High Temperature',
-            'Low Temperature',
-            'Noise Level',
-            'High Light Intensity',
-            'High Stress',
-            'Low Relaxation',
-            'Late Dinner',
-            'Dietary Variety'
-        ];
-        // Initialize all to 0
-        const factors = {};
-        allFactors.forEach(f => { factors[f] = 0; });
 
-        // Night Awakenings
-        const awakeningsCount = this.safeGet(data, 'Awakenings During Night');
-        if (awakeningsCount !== null && awakeningsCount > 0) {
-            analysisParts.push(`You woke up ${awakeningsCount} times during the night, which can fragment sleep.`);
+    /**
+     * Analyze sleep data and return prediction results
+     * @param {Object} data - The input data for sleep prediction
+     * @param {string} [userName='there'] - Optional user name for personalization
+     * @returns {Object} Prediction results with analysis and recommendations
+     */
+    analyzeSleepData(data, userName = 'there') {
+        try {
+            // Calculate prediction score
+            const score = this.calculatePredictionScore(data);
+            
+            // Calculate sleep disorder probability
+            const disorderProbability = this.calculateSleepDisorderProbability(data);
+            
+            // Generate prediction summary
+            const prediction = this.generatePredictionSummary(score);
+            
+            // Generate detailed analysis
+            const detailedAnalysis = this.generateDetailedAnalysis(data);
+            
+            // Predict sleep interruptions
+            const interruptionPredictions = this.predictSleepInterruptions(data, disorderProbability);
+            
+            // Calculate contributing factors
+            const contributingFactors = this.calculateContributingFactors(data);
+            
+            // Generate recommendations and positive reinforcements
+            const { 
+                recommendations, 
+                positiveReinforcements 
+            } = this.generateRecommendations(data, userName);
+            
+            // Prepare response
+            return {
+                prediction,
+                detailedAnalysis,
+                recommendations,
+                positiveReinforcements,
+                score,
+                disorderProbability,
+                interruptionPredictions,
+                contributingFactors,
+                timestamp: new Date().toISOString()
+            };
+        } catch (error) {
+            console.error('Error in analyzeSleepData:', error);
+            throw new Error('Failed to analyze sleep data: ' + error.message);
         }
-        const awakenings = this.safeGet(data, 'Awakenings During Night');
-        if (awakenings !== null && awakenings > 0) {
-            factors['Night Awakenings'] = awakenings;
-        }
-
-        // Device Use
-        const deviceUse = this.safeGet(data, 'Use Electronic Devices Before Bed');
-        if (deviceUse) {
-            factors['Device Use'] = 0.6;
-        }
-
-        // Temperature
-        const temp = this.safeGet(data, 'Temperature');
-        if (temp !== null) {
-        if (temp > 26) {
-            factors['High Temperature'] = Math.min(0.9, (temp - 26) / 20);
-        } else if (temp < 16) {
-            factors['Low Temperature'] = Math.min(0.7, (16 - temp) / 10);
-            }
-        }
-
-        // Noise Level
-        const sound = this.safeGet(data, 'Sound Exposure');
-        if (sound !== null && (sound.includes('moderate') || sound.includes('loud'))) {
-            factors['Noise Level'] = 0.5;
-        }
-
-        // Light Intensity
-        const light = this.safeGet(data, 'Light Intensity');
-        if (light !== null) {
-        if (light > 50 && light <= 200) {
-            factors['High Light Intensity'] = Math.min(0.5, (light - 50) / 150);
-        } else if (light > 200) {
-            factors['High Light Intensity'] = 0.8;
-            }
-        }
-
-        // Stress Level – always include a scaled factor (0-1 across levels 1-5)
-        const stress = this.getStressLevel(data);
-        const clampedStress = stress !== null ? Math.max(1, Math.min(5, stress)) : null;
-        if (clampedStress !== null) {
-            // Scale: 1 → 0, 5 → 1   (each step adds 0.25)
-            factors['Stress Level'] = (clampedStress - 1) * 0.25;
-        }
-
-        // Relaxation Level
-        const relaxation = this.safeGet(data, 'How Relaxed Before Sleep');
-        if (relaxation !== null && relaxation < 3) {
-            factors['Low Relaxation'] = (3 - relaxation) * 0.2;
-        }
-
-        // Late Dinner
-        const dinnerHour = this.safeGet(data, 'Dinner Time Hour');
-        if (dinnerHour !== null && dinnerHour >= 21) {
-            factors['Late Dinner'] = 0.4;
-        }
-
-        // Dietary Variety
-        const breakfastType = this.safeGet(data, 'Breakfast Food Type');
-        if (breakfastType !== null && !this.safeGet(data, 'Lunch Food Type')) throw new Error('Missing required field: Lunch Food Type');
-        const lunchType = this.safeGet(data, 'Lunch Food Type');
-        if (breakfastType !== null && !this.safeGet(data, 'Dinner Food Type')) throw new Error('Missing required field: Dinner Food Type');
-        const dinnerType = this.safeGet(data, 'Dinner Food Type');
-        if (breakfastType !== null && breakfastType === lunchType && lunchType === dinnerType && breakfastType !== '') {
-            factors['Dietary Variety'] = 0.1;
-        }
-
-        return factors;
-    }
-*/
-
-    // Main analysis method
-    analyzeSleepData(data) {
-        // DEBUG: Log the input data received for prediction
-        console.log('=== [DEBUG] analyzeSleepData INPUT DATA ===');
-        console.log(JSON.stringify(data, null, 2));
-        console.log('Sleep Duration:', data['Sleep Duration']);
-
-        // Extract user information
-        const userName = data.userName || 'there';
-        const age = data.Age || 30;
-        const gender = data.Gender || 'Unknown';
-
-        // Calculate prediction score
-        const predictionScore = this.calculatePredictionScore(data);
-        const normalizedScore = Math.round((predictionScore / 10) * 100) / 100;
-
-        // Calculate sleep disorder probability
-        const sleepDisorderProbability = this.calculateSleepDisorderProbability(data);
-
-        // Generate prediction summary
-        const predictionSummary = this.generatePredictionSummary(predictionScore);
-
-        // Generate detailed analysis
-        const detailedAnalysis = this.generateDetailedAnalysis(data);
-
-        // Generate sleep interruption predictions
-        const { count: interruptionCount, windows: interruptionWindows } = this.predictSleepInterruptions(data, sleepDisorderProbability);
-
-        // Generate recommendations
-        const recommendations = this.generateRecommendations(data, userName);
-
-        // Calculate contributing factors
-        const contributingFactors = this.calculateContributingFactors(data);
-
-        // Prepare response
-        const response = {
-            prediction: predictionSummary,
-            detailedAnalysis: detailedAnalysis,
-            sleepDisorderProbability: Math.round(sleepDisorderProbability * 100) / 100,
-            recommendations: recommendations,
-            predictionScore: Math.round(predictionScore * 10) / 10,
-            normalizedScore: normalizedScore,
-            predictedInterruptionCount: interruptionCount,
-            predictedInterruptionWindows: interruptionWindows,
-            contributingFactors: contributingFactors,
-            timestamp: new Date().toISOString()
-        };
-
-        return response;
     }
 }
 
-module.exports = SleepPredictionService; 
+module.exports = SleepPredictionService;
