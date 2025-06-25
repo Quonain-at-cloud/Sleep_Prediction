@@ -1,6 +1,6 @@
 -- Merging decision tree log ---
 application
-INJECTED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:12:5-43:19
+INJECTED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:14:5-56:19
 INJECTED from D:\Flutter_Apps\sleep_prediction\android\app\src\debug\AndroidManifest.xml
 MERGED from [:geolocator_android] D:\Flutter_Apps\sleep_prediction\build\geolocator_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:7:5-13:19
 MERGED from [:geolocator_android] D:\Flutter_Apps\sleep_prediction\build\geolocator_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:7:5-13:19
@@ -37,8 +37,8 @@ MERGED from [androidx.room:room-runtime:2.5.0] C:\Users\quona\.gradle\caches\8.1
 	android:name
 		INJECTED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml
 manifest
-ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:1:1-55:12
-MERGED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:1:1-55:12
+ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:1:1-68:12
+MERGED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:1:1-68:12
 INJECTED from D:\Flutter_Apps\sleep_prediction\android\app\src\debug\AndroidManifest.xml:1:1-7:12
 INJECTED from D:\Flutter_Apps\sleep_prediction\android\app\src\debug\AndroidManifest.xml:1:1-7:12
 INJECTED from D:\Flutter_Apps\sleep_prediction\android\app\src\debug\AndroidManifest.xml:1:1-7:12
@@ -153,24 +153,28 @@ MERGED from [androidx.work:work-runtime:2.9.0] C:\Users\quona\.gradle\caches\8.1
 MERGED from [androidx.work:work-runtime:2.9.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\a0e6944382c27ba92a1e1a3e0f40ab0b\transformed\work-runtime-2.9.0\AndroidManifest.xml:25:5-81
 	android:name
 		ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:9:22-78
+uses-permission#android.permission.SCHEDULE_EXACT_ALARM
+ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:11:5-79
+	android:name
+		ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:11:22-76
 uses-permission#android.permission.WAKE_LOCK
-ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:10:5-67
+ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:12:5-67
 MERGED from [androidx.work:work-runtime:2.9.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\a0e6944382c27ba92a1e1a3e0f40ab0b\transformed\work-runtime-2.9.0\AndroidManifest.xml:23:5-68
 MERGED from [androidx.work:work-runtime:2.9.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\a0e6944382c27ba92a1e1a3e0f40ab0b\transformed\work-runtime-2.9.0\AndroidManifest.xml:23:5-68
 	android:name
-		ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:10:22-65
+		ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:12:22-65
 queries
-ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:49:5-54:15
+ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:62:5-67:15
 intent#action:name:android.intent.action.PROCESS_TEXT+data:mimeType:text/plain
-ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:50:9-53:18
+ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:63:9-66:18
 action#android.intent.action.PROCESS_TEXT
-ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:51:13-72
+ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:64:13-72
 	android:name
-		ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:51:21-70
+		ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:64:21-70
 data
-ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:52:13-50
+ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:65:13-50
 	android:mimeType
-		ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:52:19-48
+		ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:65:19-48
 uses-permission#android.permission.INTERNET
 ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\debug\AndroidManifest.xml:6:5-66
 	android:name
