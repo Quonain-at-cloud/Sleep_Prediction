@@ -19,25 +19,43 @@ class NotificationProvider with ChangeNotifier {
   String? _currentUserId;
   String? get currentUserId => _currentUserId;
   bool _isInitialized = false;
+  bool _isLoading = false;
+
+  bool get isLoading => _isLoading;
+  bool get isInitialized => _isInitialized;
 
   NotificationProvider({
     SocketService? socketService,
     AuthService? authService,
   }) : _socketService = socketService ?? SocketService(),
        _authService = authService ?? AuthService() {
-    _init();
+    // Don't auto-initialize, wait for user login
+    _logger.i('NotificationProvider: Created, waiting for user login');
   }
 
-  Future<void> _init() async {
+  Future<void> initialize() async {
+    if (_isInitialized) return;
+    
     try {
+      _isLoading = true;
+      notifyListeners();
+      
       _logger.i('NotificationProvider: Starting initialization');
       await _loadCurrentUser();
-      await _openHiveBox();
-      await _listenToSocket();
-      _isInitialized = true;
-      _logger.i('NotificationProvider: Initialization complete. User ID: $_currentUserId');
+      
+      if (_currentUserId != null) {
+        await _openHiveBox();
+        await _listenToSocket();
+        _isInitialized = true;
+        _logger.i('NotificationProvider: Initialization complete. User ID: $_currentUserId');
+      } else {
+        _logger.w('NotificationProvider: No user ID available, skipping initialization');
+      }
     } catch (e) {
       _logger.e('NotificationProvider: Initialization failed', e);
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
   }
 
@@ -83,10 +101,8 @@ class NotificationProvider with ChangeNotifier {
       
       await _socketService.init(wsUrl);
       
-      // Listen for general and schedule notifications
-      for (final event in ['new_notification', 'schedule_reminder']) {
-        _socketService.on(event, _handleIncomingNotification);
-      }
+      // Listen for notifications from backend
+      _socketService.on('new_notification', _handleIncomingNotification);
       
       _logger.i('NotificationProvider: Socket listener set up successfully');
     } catch (e) {
@@ -97,9 +113,13 @@ class NotificationProvider with ChangeNotifier {
   void _handleIncomingNotification(dynamic data) {
     _logger.i('NotificationProvider: Received notification: $data');
     if (data is Map) {
-      final notif = NotificationModel.fromJson(Map<String, dynamic>.from(data));
-      if (notif.userId == _currentUserId) {
-        _addNotification(notif);
+      try {
+        final notif = NotificationModel.fromJson(Map<String, dynamic>.from(data));
+        if (notif.userId == _currentUserId || notif.userId.isEmpty) {
+          _addNotification(notif);
+        }
+      } catch (e) {
+        _logger.e('NotificationProvider: Failed to parse notification data', e);
       }
     }
   }
@@ -114,29 +134,53 @@ class NotificationProvider with ChangeNotifier {
       final boxName = 'notifications_box_$_currentUserId';
       final box = await Hive.openBox<NotificationModel>(boxName);
 
-      // Duplicate check: Agar notification pehle se hai, to skip karo
+      // Improved duplicate check: title + message + type + category + timestamp ±1min
       final alreadyExists = _notifications.any((n) =>
         n.title == notification.title &&
         n.message == notification.message &&
-        n.timestamp == notification.timestamp
+        n.type == notification.type &&
+        n.category == notification.category &&
+        (n.timestamp.difference(notification.timestamp).abs().inMinutes < 1)
       );
+      
       if (alreadyExists) {
         _logger.i('NotificationProvider: Duplicate notification skipped: ${notification.title}');
         return;
       }
 
       await box.add(notification);
-      // Skip duplicate notifications (same title & timestamp)
-      final duplicate = _notifications.any((n) => n.title == notification.title && n.timestamp == notification.timestamp);
-      if (duplicate) return;
       _notifications.insert(0, notification);
+      // Always keep sorted by timestamp descending
+      _notifications.sort((a, b) => b.timestamp.compareTo(a.timestamp));
       _logger.i('NotificationProvider: Added notification: ${notification.title}');
+      
       // Trigger OS level local notification
-      await _notificationService.show(title: notification.title, body: notification.message);
+      try {
+        await _notificationService.show(title: notification.title, body: notification.message);
+      } catch (e) {
+        _logger.e('NotificationProvider: Failed to show OS notification', e);
+      }
+      
       notifyListeners();
     } catch (e) {
       _logger.e('NotificationProvider: Failed to add notification', e);
     }
+  }
+
+  // Method to manually add a notification (for testing)
+  Future<void> addTestNotification(String title, String message) async {
+    final notification = NotificationModel(
+      title: title,
+      message: message,
+      timestamp: DateTime.now(),
+      userId: _currentUserId ?? '',
+    );
+    await _addNotification(notification);
+  }
+
+  // Method to add a notification model directly
+  Future<void> addNotificationModel(NotificationModel notification) async {
+    await _addNotification(notification);
   }
 
   // Method to clear notifications when user logs out
@@ -158,18 +202,30 @@ class NotificationProvider with ChangeNotifier {
   // Method to refresh user context (call this when user logs in/out)
   Future<void> refreshUserContext() async {
     _logger.i('NotificationProvider: Refreshing user context');
-    await _loadCurrentUser();
-    await _openHiveBox();
     
-    // Re-initialize socket connection with new user context
-    if (_currentUserId != null) {
-      await _listenToSocket();
+    // Clear current state
+    _notifications.clear();
+    _isInitialized = false;
+    notifyListeners();
+    
+    // Dispose current socket connection
+    try {
+      _socketService.dispose();
+    } catch (e) {
+      _logger.e('NotificationProvider: Error disposing socket', e);
     }
+    
+    // Re-initialize with new user context
+    await initialize();
   }
 
   @override
   void dispose() {
-    _socketService.dispose();
+    try {
+      _socketService.dispose();
+    } catch (e) {
+      _logger.e('NotificationProvider: Error disposing socket service', e);
+    }
     super.dispose();
   }
 }

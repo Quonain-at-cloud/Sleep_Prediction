@@ -174,7 +174,16 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => serviceLocator<ScheduleProvider>()),
           Provider<AuthService>(create: (_) => serviceLocator<AuthService>()),
           Provider<PredictionService>(create: (_) => serviceLocator<PredictionService>()),
-          ChangeNotifierProvider(create: (_) => serviceLocator<NotificationProvider>()),
+          ChangeNotifierProvider<NotificationProvider>(
+            create: (_) {
+              final provider = serviceLocator<NotificationProvider>();
+              // Initialize the provider when it's created
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                provider.initialize();
+              });
+              return provider;
+            },
+          ),
         ],
         child: MaterialApp(
           title: 'Sleep Prediction',

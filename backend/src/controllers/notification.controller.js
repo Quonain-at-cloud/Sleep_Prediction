@@ -98,29 +98,22 @@ exports.sendUserNotification = async (req, res) => {
  * Test endpoint to manually trigger a notification for the authenticated user
  * Useful for debugging notification system
  */
-/**
- * Fetch latest notifications for authenticated user after optional ?since param
- */
-exports.getLatestNotifications = async (req, res) => {
-  const since = req.query.since ? new Date(req.query.since) : new Date(0);
-  const userId = req.user._id;
-  const notifications = await Notification.find({ userId, timestamp: { $gt: since } }).sort({ timestamp: 1 });
-  return res.json({ notifications });
-};
-
-exports.testNotification = (req, res) => {
+exports.testNotification = async (req, res) => {
   const userId = req.user._id.toString();
   const payload = {
     title: 'Test Notification',
-    message: 'This is a test notification from the backend',
+    message: 'This is a test notification to verify the system is working properly.',
     timestamp: new Date().toISOString(),
     userId,
   };
 
   try {
     socket.sendToUser(userId, payload);
-    console.log(`Test notification sent to user ${userId}`);
+    console.log(`Test notification sent to user ${userId}:`, payload.title);
     
+    // Persist to DB
+    await Notification.create(payload);
+
     return res.status(200).json({ 
       success: true, 
       notification: payload,
@@ -130,4 +123,14 @@ exports.testNotification = (req, res) => {
     console.error('Failed to send test notification:', err);
     return res.status(500).json({ error: 'Failed to send test notification' });
   }
+};
+
+/**
+ * Fetch latest notifications for authenticated user after optional ?since param
+ */
+exports.getLatestNotifications = async (req, res) => {
+  const since = req.query.since ? new Date(req.query.since) : new Date(0);
+  const userId = req.user._id;
+  const notifications = await Notification.find({ userId, timestamp: { $gt: since } }).sort({ timestamp: 1 });
+  return res.json({ notifications });
 };

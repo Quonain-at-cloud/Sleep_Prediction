@@ -293,12 +293,12 @@ class AuthService {
       _authStateController.add(user);
       _setupTokenRefresh(token);
       
-      // Refresh notification provider for the new user
+      // Initialize notification provider for the new user
       try {
         final notificationProvider = serviceLocator<NotificationProvider>();
-        await notificationProvider.refreshUserContext();
+        await notificationProvider.initialize();
       } catch (e) {
-        _logger.w('Failed to refresh notification provider on login: $e');
+        _logger.w('Failed to initialize notification provider on login: $e');
       }
       
       return token;
@@ -510,25 +510,31 @@ class AuthService {
 
   // Sign out method
   Future<void> logout() async {
-    _logger.i('Logging out user: ${_currentUser?.email}');
-    _tokenRefreshTimer?.cancel();
-    _tokenRefreshTimer = null;
-    _currentUser = null;
-    _localToken = null;
-    await _apiService.clearToken(); // Clear token in ApiService (SharedPreferences and Dio headers)
-    if (_authStateController.hasListener && !_authStateController.isClosed) {
-       _authStateController.add(null);
-    }
-    
-    // Clear notifications for the logged out user
     try {
-      final notificationProvider = serviceLocator<NotificationProvider>();
-      await notificationProvider.clearNotifications();
+      // Clear notifications for the current user
+      try {
+        final notificationProvider = serviceLocator<NotificationProvider>();
+        await notificationProvider.clearNotifications();
+      } catch (e) {
+        _logger.w('Failed to clear notifications on logout: $e');
+      }
+      
+      // Clear local data
+      await _apiService.clearToken();
+      _localToken = null;
+      _currentUser = null;
+      _authStateController.add(null);
+      
+      // Clear any stored user data
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('auth_token');
+      await prefs.remove('user_id');
+      
+      _logger.i('User logged out successfully');
     } catch (e) {
-      _logger.w('Failed to clear notifications on logout: $e');
+      _logger.e('Error during logout', e);
+      rethrow;
     }
-    
-    _logger.i('User logged out successfully.');
   }
 
   // Alias for logout if needed, or can be removed if direct calls to logout() are preferred.
