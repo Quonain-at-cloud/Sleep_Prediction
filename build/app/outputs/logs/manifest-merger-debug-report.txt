@@ -1,15 +1,15 @@
 -- Merging decision tree log ---
 application
-INJECTED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:14:5-56:19
-INJECTED from D:\Flutter_Apps\sleep_prediction\android\app\src\debug\AndroidManifest.xml
-MERGED from [:geolocator_android] D:\Flutter_Apps\sleep_prediction\build\geolocator_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:7:5-13:19
-MERGED from [:geolocator_android] D:\Flutter_Apps\sleep_prediction\build\geolocator_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:7:5-13:19
+INJECTED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\main\AndroidManifest.xml:14:5-56:19
+INJECTED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\debug\AndroidManifest.xml
+MERGED from [:geolocator_android] D:\Flutter_Apps\Abit\sleep_prediction\build\geolocator_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:7:5-13:19
+MERGED from [:geolocator_android] D:\Flutter_Apps\Abit\sleep_prediction\build\geolocator_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:7:5-13:19
 MERGED from [com.google.android.gms:play-services-location:21.2.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\cc3336a24e8ef5d3d66fff7f5ca80854\transformed\jetified-play-services-location-21.2.0\AndroidManifest.xml:7:5-20
 MERGED from [com.google.android.gms:play-services-location:21.2.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\cc3336a24e8ef5d3d66fff7f5ca80854\transformed\jetified-play-services-location-21.2.0\AndroidManifest.xml:7:5-20
 MERGED from [androidx.work:work-runtime:2.9.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\a0e6944382c27ba92a1e1a3e0f40ab0b\transformed\work-runtime-2.9.0\AndroidManifest.xml:28:5-143:19
 MERGED from [androidx.work:work-runtime:2.9.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\a0e6944382c27ba92a1e1a3e0f40ab0b\transformed\work-runtime-2.9.0\AndroidManifest.xml:28:5-143:19
-MERGED from [:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:8:5-32:19
-MERGED from [:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:8:5-32:19
+MERGED from [:image_picker_android] D:\Flutter_Apps\Abit\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:8:5-32:19
+MERGED from [:image_picker_android] D:\Flutter_Apps\Abit\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:8:5-32:19
 MERGED from [com.google.android.gms:play-services-base:18.3.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\9db9b81a577112600e8d2ee7b5450923\transformed\jetified-play-services-base-18.3.0\AndroidManifest.xml:19:5-23:19
 MERGED from [com.google.android.gms:play-services-base:18.3.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\9db9b81a577112600e8d2ee7b5450923\transformed\jetified-play-services-base-18.3.0\AndroidManifest.xml:19:5-23:19
 MERGED from [com.google.android.gms:play-services-tasks:18.1.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\7b180219ad72ca48e76b8a5127003ab7\transformed\jetified-play-services-tasks-18.1.0\AndroidManifest.xml:5:5-20
@@ -31,32 +31,32 @@ MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\qu
 MERGED from [androidx.room:room-runtime:2.5.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\0dff76a68dc8d9f02bfb3554b645dfd6\transformed\room-runtime-2.5.0\AndroidManifest.xml:23:5-29:19
 MERGED from [androidx.room:room-runtime:2.5.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\0dff76a68dc8d9f02bfb3554b645dfd6\transformed\room-runtime-2.5.0\AndroidManifest.xml:23:5-29:19
 	android:extractNativeLibs
-		INJECTED from D:\Flutter_Apps\sleep_prediction\android\app\src\debug\AndroidManifest.xml
+		INJECTED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\debug\AndroidManifest.xml
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.13.1] C:\Users\quona\.gradle\caches\8.10.2\transforms\8cf478dec41eed746328fa8046755ba2\transformed\core-1.13.1\AndroidManifest.xml:28:18-86
 	android:name
-		INJECTED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml
+		INJECTED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\main\AndroidManifest.xml
 manifest
-ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:1:1-68:12
-MERGED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:1:1-68:12
-INJECTED from D:\Flutter_Apps\sleep_prediction\android\app\src\debug\AndroidManifest.xml:1:1-7:12
-INJECTED from D:\Flutter_Apps\sleep_prediction\android\app\src\debug\AndroidManifest.xml:1:1-7:12
-INJECTED from D:\Flutter_Apps\sleep_prediction\android\app\src\debug\AndroidManifest.xml:1:1-7:12
-MERGED from [:light] D:\Flutter_Apps\sleep_prediction\build\light\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:2:1-7:12
-MERGED from [:shared_preferences_android] D:\Flutter_Apps\sleep_prediction\build\shared_preferences_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:2:1-7:12
-MERGED from [:workmanager] D:\Flutter_Apps\sleep_prediction\build\workmanager\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:2:1-9:12
-MERGED from [:geolocator_android] D:\Flutter_Apps\sleep_prediction\build\geolocator_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:2:1-15:12
+ADDED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\main\AndroidManifest.xml:1:1-68:12
+MERGED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\main\AndroidManifest.xml:1:1-68:12
+INJECTED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\debug\AndroidManifest.xml:1:1-7:12
+INJECTED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\debug\AndroidManifest.xml:1:1-7:12
+INJECTED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\debug\AndroidManifest.xml:1:1-7:12
+MERGED from [:light] D:\Flutter_Apps\Abit\sleep_prediction\build\light\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:2:1-7:12
+MERGED from [:shared_preferences_android] D:\Flutter_Apps\Abit\sleep_prediction\build\shared_preferences_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:2:1-7:12
+MERGED from [:workmanager] D:\Flutter_Apps\Abit\sleep_prediction\build\workmanager\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:2:1-9:12
+MERGED from [:geolocator_android] D:\Flutter_Apps\Abit\sleep_prediction\build\geolocator_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:2:1-15:12
 MERGED from [com.google.android.gms:play-services-location:21.2.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\cc3336a24e8ef5d3d66fff7f5ca80854\transformed\jetified-play-services-location-21.2.0\AndroidManifest.xml:2:1-9:12
 MERGED from [androidx.work:work-runtime:2.9.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\a0e6944382c27ba92a1e1a3e0f40ab0b\transformed\work-runtime-2.9.0\AndroidManifest.xml:17:1-145:12
-MERGED from [:audio_streamer] D:\Flutter_Apps\sleep_prediction\build\audio_streamer\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:2:1-7:12
-MERGED from [:connectivity_plus] D:\Flutter_Apps\sleep_prediction\build\connectivity_plus\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:2:1-9:12
-MERGED from [:flutter_local_notifications] D:\Flutter_Apps\sleep_prediction\build\flutter_local_notifications\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:2:1-10:12
-MERGED from [:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:2:1-34:12
-MERGED from [:flutter_plugin_android_lifecycle] D:\Flutter_Apps\sleep_prediction\build\flutter_plugin_android_lifecycle\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:2:1-7:12
-MERGED from [:path_provider_android] D:\Flutter_Apps\sleep_prediction\build\path_provider_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:2:1-7:12
-MERGED from [:permission_handler_android] D:\Flutter_Apps\sleep_prediction\build\permission_handler_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:2:1-7:12
-MERGED from [:sensors_plus] D:\Flutter_Apps\sleep_prediction\build\sensors_plus\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:2:1-7:12
-MERGED from [:sqflite_android] D:\Flutter_Apps\sleep_prediction\build\sqflite_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:2:1-7:12
+MERGED from [:audio_streamer] D:\Flutter_Apps\Abit\sleep_prediction\build\audio_streamer\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:2:1-7:12
+MERGED from [:connectivity_plus] D:\Flutter_Apps\Abit\sleep_prediction\build\connectivity_plus\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:2:1-9:12
+MERGED from [:flutter_local_notifications] D:\Flutter_Apps\Abit\sleep_prediction\build\flutter_local_notifications\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:2:1-10:12
+MERGED from [:image_picker_android] D:\Flutter_Apps\Abit\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:2:1-34:12
+MERGED from [:flutter_plugin_android_lifecycle] D:\Flutter_Apps\Abit\sleep_prediction\build\flutter_plugin_android_lifecycle\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:2:1-7:12
+MERGED from [:path_provider_android] D:\Flutter_Apps\Abit\sleep_prediction\build\path_provider_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:2:1-7:12
+MERGED from [:permission_handler_android] D:\Flutter_Apps\Abit\sleep_prediction\build\permission_handler_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:2:1-7:12
+MERGED from [:sensors_plus] D:\Flutter_Apps\Abit\sleep_prediction\build\sensors_plus\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:2:1-7:12
+MERGED from [:sqflite_android] D:\Flutter_Apps\Abit\sleep_prediction\build\sqflite_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.media:media:1.1.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\cd79e8926f3586b575e2cf621318b1c2\transformed\media-1.1.0\AndroidManifest.xml:17:1-24:12
 MERGED from [com.google.android.gms:play-services-base:18.3.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\9db9b81a577112600e8d2ee7b5450923\transformed\jetified-play-services-base-18.3.0\AndroidManifest.xml:16:1-24:12
 MERGED from [com.google.android.gms:play-services-tasks:18.1.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\7b180219ad72ca48e76b8a5127003ab7\transformed\jetified-play-services-tasks-18.1.0\AndroidManifest.xml:2:1-6:12
@@ -120,99 +120,99 @@ MERGED from [androidx.print:print:1.0.0] C:\Users\quona\.gradle\caches\8.10.2\tr
 MERGED from [androidx.annotation:annotation-experimental:1.4.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\f09a22cdd213028a38958888c7d16e20\transformed\jetified-annotation-experimental-1.4.0\AndroidManifest.xml:2:1-7:12
 MERGED from [com.getkeepsafe.relinker:relinker:1.4.5] C:\Users\quona\.gradle\caches\8.10.2\transforms\9e1412f82216e9a99f9f845f4567c1f2\transformed\jetified-relinker-1.4.5\AndroidManifest.xml:2:1-7:12
 	package
-		INJECTED from D:\Flutter_Apps\sleep_prediction\android\app\src\debug\AndroidManifest.xml
+		INJECTED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\debug\AndroidManifest.xml
 	android:versionName
-		INJECTED from D:\Flutter_Apps\sleep_prediction\android\app\src\debug\AndroidManifest.xml
+		INJECTED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\debug\AndroidManifest.xml
 	android:versionCode
-		INJECTED from D:\Flutter_Apps\sleep_prediction\android\app\src\debug\AndroidManifest.xml
+		INJECTED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\debug\AndroidManifest.xml
 	xmlns:android
-		ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:1:11-69
+		ADDED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\main\AndroidManifest.xml:1:11-69
 uses-permission#android.permission.ACCESS_FINE_LOCATION
-ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:3:5-78
+ADDED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\main\AndroidManifest.xml:3:5-78
 	android:name
-		ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:3:22-76
+		ADDED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\main\AndroidManifest.xml:3:22-76
 uses-permission#android.permission.ACCESS_COARSE_LOCATION
-ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:4:5-80
+ADDED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\main\AndroidManifest.xml:4:5-80
 	android:name
-		ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:4:22-78
+		ADDED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\main\AndroidManifest.xml:4:22-78
 uses-permission#android.permission.RECORD_AUDIO
-ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:5:5-70
+ADDED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\main\AndroidManifest.xml:5:5-70
 	android:name
-		ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:5:22-68
+		ADDED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\main\AndroidManifest.xml:5:22-68
 uses-permission#android.permission.POST_NOTIFICATIONS
-ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:7:5-76
-MERGED from [:workmanager] D:\Flutter_Apps\sleep_prediction\build\workmanager\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:7:5-77
-MERGED from [:workmanager] D:\Flutter_Apps\sleep_prediction\build\workmanager\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:7:5-77
-MERGED from [:flutter_local_notifications] D:\Flutter_Apps\sleep_prediction\build\flutter_local_notifications\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:8:5-77
-MERGED from [:flutter_local_notifications] D:\Flutter_Apps\sleep_prediction\build\flutter_local_notifications\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:8:5-77
+ADDED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\main\AndroidManifest.xml:7:5-76
+MERGED from [:workmanager] D:\Flutter_Apps\Abit\sleep_prediction\build\workmanager\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:7:5-77
+MERGED from [:workmanager] D:\Flutter_Apps\Abit\sleep_prediction\build\workmanager\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:7:5-77
+MERGED from [:flutter_local_notifications] D:\Flutter_Apps\Abit\sleep_prediction\build\flutter_local_notifications\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:8:5-77
+MERGED from [:flutter_local_notifications] D:\Flutter_Apps\Abit\sleep_prediction\build\flutter_local_notifications\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:8:5-77
 	android:name
-		ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:7:22-74
+		ADDED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\main\AndroidManifest.xml:7:22-74
 uses-permission#android.permission.RECEIVE_BOOT_COMPLETED
-ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:9:5-80
+ADDED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\main\AndroidManifest.xml:9:5-80
 MERGED from [androidx.work:work-runtime:2.9.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\a0e6944382c27ba92a1e1a3e0f40ab0b\transformed\work-runtime-2.9.0\AndroidManifest.xml:25:5-81
 MERGED from [androidx.work:work-runtime:2.9.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\a0e6944382c27ba92a1e1a3e0f40ab0b\transformed\work-runtime-2.9.0\AndroidManifest.xml:25:5-81
 	android:name
-		ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:9:22-78
+		ADDED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\main\AndroidManifest.xml:9:22-78
 uses-permission#android.permission.SCHEDULE_EXACT_ALARM
-ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:11:5-79
+ADDED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\main\AndroidManifest.xml:11:5-79
 	android:name
-		ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:11:22-76
+		ADDED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\main\AndroidManifest.xml:11:22-76
 uses-permission#android.permission.WAKE_LOCK
-ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:12:5-67
+ADDED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\main\AndroidManifest.xml:12:5-67
 MERGED from [androidx.work:work-runtime:2.9.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\a0e6944382c27ba92a1e1a3e0f40ab0b\transformed\work-runtime-2.9.0\AndroidManifest.xml:23:5-68
 MERGED from [androidx.work:work-runtime:2.9.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\a0e6944382c27ba92a1e1a3e0f40ab0b\transformed\work-runtime-2.9.0\AndroidManifest.xml:23:5-68
 	android:name
-		ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:12:22-65
+		ADDED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\main\AndroidManifest.xml:12:22-65
 queries
-ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:62:5-67:15
+ADDED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\main\AndroidManifest.xml:62:5-67:15
 intent#action:name:android.intent.action.PROCESS_TEXT+data:mimeType:text/plain
-ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:63:9-66:18
+ADDED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\main\AndroidManifest.xml:63:9-66:18
 action#android.intent.action.PROCESS_TEXT
-ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:64:13-72
+ADDED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\main\AndroidManifest.xml:64:13-72
 	android:name
-		ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:64:21-70
+		ADDED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\main\AndroidManifest.xml:64:21-70
 data
-ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:65:13-50
+ADDED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\main\AndroidManifest.xml:65:13-50
 	android:mimeType
-		ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\main\AndroidManifest.xml:65:19-48
+		ADDED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\main\AndroidManifest.xml:65:19-48
 uses-permission#android.permission.INTERNET
-ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\debug\AndroidManifest.xml:6:5-66
+ADDED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\debug\AndroidManifest.xml:6:5-66
 	android:name
-		ADDED from D:\Flutter_Apps\sleep_prediction\android\app\src\debug\AndroidManifest.xml:6:22-64
+		ADDED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\debug\AndroidManifest.xml:6:22-64
 uses-sdk
-INJECTED from D:\Flutter_Apps\sleep_prediction\android\app\src\debug\AndroidManifest.xml reason: use-sdk injection requested
-INJECTED from D:\Flutter_Apps\sleep_prediction\android\app\src\debug\AndroidManifest.xml
-INJECTED from D:\Flutter_Apps\sleep_prediction\android\app\src\debug\AndroidManifest.xml
-MERGED from [:light] D:\Flutter_Apps\sleep_prediction\build\light\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
-MERGED from [:light] D:\Flutter_Apps\sleep_prediction\build\light\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
-MERGED from [:shared_preferences_android] D:\Flutter_Apps\sleep_prediction\build\shared_preferences_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
-MERGED from [:shared_preferences_android] D:\Flutter_Apps\sleep_prediction\build\shared_preferences_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
-MERGED from [:workmanager] D:\Flutter_Apps\sleep_prediction\build\workmanager\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
-MERGED from [:workmanager] D:\Flutter_Apps\sleep_prediction\build\workmanager\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
-MERGED from [:geolocator_android] D:\Flutter_Apps\sleep_prediction\build\geolocator_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
-MERGED from [:geolocator_android] D:\Flutter_Apps\sleep_prediction\build\geolocator_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
+INJECTED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\debug\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\debug\AndroidManifest.xml
+INJECTED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\debug\AndroidManifest.xml
+MERGED from [:light] D:\Flutter_Apps\Abit\sleep_prediction\build\light\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
+MERGED from [:light] D:\Flutter_Apps\Abit\sleep_prediction\build\light\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
+MERGED from [:shared_preferences_android] D:\Flutter_Apps\Abit\sleep_prediction\build\shared_preferences_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
+MERGED from [:shared_preferences_android] D:\Flutter_Apps\Abit\sleep_prediction\build\shared_preferences_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
+MERGED from [:workmanager] D:\Flutter_Apps\Abit\sleep_prediction\build\workmanager\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
+MERGED from [:workmanager] D:\Flutter_Apps\Abit\sleep_prediction\build\workmanager\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
+MERGED from [:geolocator_android] D:\Flutter_Apps\Abit\sleep_prediction\build\geolocator_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
+MERGED from [:geolocator_android] D:\Flutter_Apps\Abit\sleep_prediction\build\geolocator_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
 MERGED from [com.google.android.gms:play-services-location:21.2.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\cc3336a24e8ef5d3d66fff7f5ca80854\transformed\jetified-play-services-location-21.2.0\AndroidManifest.xml:5:5-44
 MERGED from [com.google.android.gms:play-services-location:21.2.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\cc3336a24e8ef5d3d66fff7f5ca80854\transformed\jetified-play-services-location-21.2.0\AndroidManifest.xml:5:5-44
 MERGED from [androidx.work:work-runtime:2.9.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\a0e6944382c27ba92a1e1a3e0f40ab0b\transformed\work-runtime-2.9.0\AndroidManifest.xml:21:5-44
 MERGED from [androidx.work:work-runtime:2.9.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\a0e6944382c27ba92a1e1a3e0f40ab0b\transformed\work-runtime-2.9.0\AndroidManifest.xml:21:5-44
-MERGED from [:audio_streamer] D:\Flutter_Apps\sleep_prediction\build\audio_streamer\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
-MERGED from [:audio_streamer] D:\Flutter_Apps\sleep_prediction\build\audio_streamer\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
-MERGED from [:connectivity_plus] D:\Flutter_Apps\sleep_prediction\build\connectivity_plus\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
-MERGED from [:connectivity_plus] D:\Flutter_Apps\sleep_prediction\build\connectivity_plus\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
-MERGED from [:flutter_local_notifications] D:\Flutter_Apps\sleep_prediction\build\flutter_local_notifications\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
-MERGED from [:flutter_local_notifications] D:\Flutter_Apps\sleep_prediction\build\flutter_local_notifications\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
-MERGED from [:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:6:5-44
-MERGED from [:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:6:5-44
-MERGED from [:flutter_plugin_android_lifecycle] D:\Flutter_Apps\sleep_prediction\build\flutter_plugin_android_lifecycle\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
-MERGED from [:flutter_plugin_android_lifecycle] D:\Flutter_Apps\sleep_prediction\build\flutter_plugin_android_lifecycle\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
-MERGED from [:path_provider_android] D:\Flutter_Apps\sleep_prediction\build\path_provider_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
-MERGED from [:path_provider_android] D:\Flutter_Apps\sleep_prediction\build\path_provider_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
-MERGED from [:permission_handler_android] D:\Flutter_Apps\sleep_prediction\build\permission_handler_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
-MERGED from [:permission_handler_android] D:\Flutter_Apps\sleep_prediction\build\permission_handler_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
-MERGED from [:sensors_plus] D:\Flutter_Apps\sleep_prediction\build\sensors_plus\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
-MERGED from [:sensors_plus] D:\Flutter_Apps\sleep_prediction\build\sensors_plus\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
-MERGED from [:sqflite_android] D:\Flutter_Apps\sleep_prediction\build\sqflite_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
-MERGED from [:sqflite_android] D:\Flutter_Apps\sleep_prediction\build\sqflite_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
+MERGED from [:audio_streamer] D:\Flutter_Apps\Abit\sleep_prediction\build\audio_streamer\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
+MERGED from [:audio_streamer] D:\Flutter_Apps\Abit\sleep_prediction\build\audio_streamer\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
+MERGED from [:connectivity_plus] D:\Flutter_Apps\Abit\sleep_prediction\build\connectivity_plus\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
+MERGED from [:connectivity_plus] D:\Flutter_Apps\Abit\sleep_prediction\build\connectivity_plus\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
+MERGED from [:flutter_local_notifications] D:\Flutter_Apps\Abit\sleep_prediction\build\flutter_local_notifications\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
+MERGED from [:flutter_local_notifications] D:\Flutter_Apps\Abit\sleep_prediction\build\flutter_local_notifications\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
+MERGED from [:image_picker_android] D:\Flutter_Apps\Abit\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:6:5-44
+MERGED from [:image_picker_android] D:\Flutter_Apps\Abit\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:6:5-44
+MERGED from [:flutter_plugin_android_lifecycle] D:\Flutter_Apps\Abit\sleep_prediction\build\flutter_plugin_android_lifecycle\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
+MERGED from [:flutter_plugin_android_lifecycle] D:\Flutter_Apps\Abit\sleep_prediction\build\flutter_plugin_android_lifecycle\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
+MERGED from [:path_provider_android] D:\Flutter_Apps\Abit\sleep_prediction\build\path_provider_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
+MERGED from [:path_provider_android] D:\Flutter_Apps\Abit\sleep_prediction\build\path_provider_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
+MERGED from [:permission_handler_android] D:\Flutter_Apps\Abit\sleep_prediction\build\permission_handler_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
+MERGED from [:permission_handler_android] D:\Flutter_Apps\Abit\sleep_prediction\build\permission_handler_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
+MERGED from [:sensors_plus] D:\Flutter_Apps\Abit\sleep_prediction\build\sensors_plus\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
+MERGED from [:sensors_plus] D:\Flutter_Apps\Abit\sleep_prediction\build\sensors_plus\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
+MERGED from [:sqflite_android] D:\Flutter_Apps\Abit\sleep_prediction\build\sqflite_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
+MERGED from [:sqflite_android] D:\Flutter_Apps\Abit\sleep_prediction\build\sqflite_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:5:5-44
 MERGED from [androidx.media:media:1.1.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\cd79e8926f3586b575e2cf621318b1c2\transformed\media-1.1.0\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.media:media:1.1.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\cd79e8926f3586b575e2cf621318b1c2\transformed\media-1.1.0\AndroidManifest.xml:20:5-22:41
 MERGED from [com.google.android.gms:play-services-base:18.3.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\9db9b81a577112600e8d2ee7b5450923\transformed\jetified-play-services-base-18.3.0\AndroidManifest.xml:18:5-43
@@ -338,23 +338,23 @@ MERGED from [androidx.annotation:annotation-experimental:1.4.0] C:\Users\quona\.
 MERGED from [com.getkeepsafe.relinker:relinker:1.4.5] C:\Users\quona\.gradle\caches\8.10.2\transforms\9e1412f82216e9a99f9f845f4567c1f2\transformed\jetified-relinker-1.4.5\AndroidManifest.xml:5:5-43
 MERGED from [com.getkeepsafe.relinker:relinker:1.4.5] C:\Users\quona\.gradle\caches\8.10.2\transforms\9e1412f82216e9a99f9f845f4567c1f2\transformed\jetified-relinker-1.4.5\AndroidManifest.xml:5:5-43
 	android:targetSdkVersion
-		INJECTED from D:\Flutter_Apps\sleep_prediction\android\app\src\debug\AndroidManifest.xml
+		INJECTED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\debug\AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from D:\Flutter_Apps\sleep_prediction\android\app\src\debug\AndroidManifest.xml
+		INJECTED from D:\Flutter_Apps\Abit\sleep_prediction\android\app\src\debug\AndroidManifest.xml
 service#com.baseflow.geolocator.GeolocatorLocationService
-ADDED from [:geolocator_android] D:\Flutter_Apps\sleep_prediction\build\geolocator_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:8:9-12:56
+ADDED from [:geolocator_android] D:\Flutter_Apps\Abit\sleep_prediction\build\geolocator_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:8:9-12:56
 	android:enabled
-		ADDED from [:geolocator_android] D:\Flutter_Apps\sleep_prediction\build\geolocator_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:10:13-35
+		ADDED from [:geolocator_android] D:\Flutter_Apps\Abit\sleep_prediction\build\geolocator_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:10:13-35
 	android:exported
-		ADDED from [:geolocator_android] D:\Flutter_Apps\sleep_prediction\build\geolocator_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:11:13-37
+		ADDED from [:geolocator_android] D:\Flutter_Apps\Abit\sleep_prediction\build\geolocator_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:11:13-37
 	android:foregroundServiceType
-		ADDED from [:geolocator_android] D:\Flutter_Apps\sleep_prediction\build\geolocator_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:12:13-53
+		ADDED from [:geolocator_android] D:\Flutter_Apps\Abit\sleep_prediction\build\geolocator_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:12:13-53
 	android:name
-		ADDED from [:geolocator_android] D:\Flutter_Apps\sleep_prediction\build\geolocator_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:9:13-77
+		ADDED from [:geolocator_android] D:\Flutter_Apps\Abit\sleep_prediction\build\geolocator_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:9:13-77
 uses-permission#android.permission.ACCESS_NETWORK_STATE
 ADDED from [androidx.work:work-runtime:2.9.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\a0e6944382c27ba92a1e1a3e0f40ab0b\transformed\work-runtime-2.9.0\AndroidManifest.xml:24:5-79
-MERGED from [:connectivity_plus] D:\Flutter_Apps\sleep_prediction\build\connectivity_plus\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:7:5-79
-MERGED from [:connectivity_plus] D:\Flutter_Apps\sleep_prediction\build\connectivity_plus\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:7:5-79
+MERGED from [:connectivity_plus] D:\Flutter_Apps\Abit\sleep_prediction\build\connectivity_plus\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:7:5-79
+MERGED from [:connectivity_plus] D:\Flutter_Apps\Abit\sleep_prediction\build\connectivity_plus\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:7:5-79
 	android:name
 		ADDED from [androidx.work:work-runtime:2.9.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\a0e6944382c27ba92a1e1a3e0f40ab0b\transformed\work-runtime-2.9.0\AndroidManifest.xml:24:22-76
 uses-permission#android.permission.FOREGROUND_SERVICE
@@ -586,47 +586,47 @@ ADDED from [androidx.work:work-runtime:2.9.0] C:\Users\quona\.gradle\caches\8.10
 	android:name
 		ADDED from [androidx.work:work-runtime:2.9.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\a0e6944382c27ba92a1e1a3e0f40ab0b\transformed\work-runtime-2.9.0\AndroidManifest.xml:140:25-85
 uses-permission#android.permission.VIBRATE
-ADDED from [:flutter_local_notifications] D:\Flutter_Apps\sleep_prediction\build\flutter_local_notifications\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:7:5-66
+ADDED from [:flutter_local_notifications] D:\Flutter_Apps\Abit\sleep_prediction\build\flutter_local_notifications\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:7:5-66
 	android:name
-		ADDED from [:flutter_local_notifications] D:\Flutter_Apps\sleep_prediction\build\flutter_local_notifications\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:7:22-63
+		ADDED from [:flutter_local_notifications] D:\Flutter_Apps\Abit\sleep_prediction\build\flutter_local_notifications\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:7:22-63
 provider#io.flutter.plugins.imagepicker.ImagePickerFileProvider
-ADDED from [:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:9:9-17:20
+ADDED from [:image_picker_android] D:\Flutter_Apps\Abit\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:9:9-17:20
 	android:grantUriPermissions
-		ADDED from [:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:13:13-47
+		ADDED from [:image_picker_android] D:\Flutter_Apps\Abit\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:13:13-47
 	android:authorities
-		ADDED from [:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:11:13-74
+		ADDED from [:image_picker_android] D:\Flutter_Apps\Abit\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:11:13-74
 	android:exported
-		ADDED from [:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:12:13-37
+		ADDED from [:image_picker_android] D:\Flutter_Apps\Abit\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:12:13-37
 	android:name
-		ADDED from [:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:10:13-82
+		ADDED from [:image_picker_android] D:\Flutter_Apps\Abit\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:10:13-82
 meta-data#android.support.FILE_PROVIDER_PATHS
-ADDED from [:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:14:13-16:75
+ADDED from [:image_picker_android] D:\Flutter_Apps\Abit\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:14:13-16:75
 	android:resource
-		ADDED from [:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:16:17-72
+		ADDED from [:image_picker_android] D:\Flutter_Apps\Abit\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:16:17-72
 	android:name
-		ADDED from [:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:15:17-67
+		ADDED from [:image_picker_android] D:\Flutter_Apps\Abit\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:15:17-67
 service#com.google.android.gms.metadata.ModuleDependencies
-ADDED from [:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:19:9-31:19
+ADDED from [:image_picker_android] D:\Flutter_Apps\Abit\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:19:9-31:19
 	android:enabled
-		ADDED from [:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:21:13-36
+		ADDED from [:image_picker_android] D:\Flutter_Apps\Abit\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:21:13-36
 	android:exported
-		ADDED from [:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:22:13-37
+		ADDED from [:image_picker_android] D:\Flutter_Apps\Abit\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:22:13-37
 	tools:ignore
-		ADDED from [:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:23:13-40
+		ADDED from [:image_picker_android] D:\Flutter_Apps\Abit\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:23:13-40
 	android:name
-		ADDED from [:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:20:13-78
+		ADDED from [:image_picker_android] D:\Flutter_Apps\Abit\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:20:13-78
 intent-filter#action:name:com.google.android.gms.metadata.MODULE_DEPENDENCIES
-ADDED from [:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:24:13-26:29
+ADDED from [:image_picker_android] D:\Flutter_Apps\Abit\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:24:13-26:29
 action#com.google.android.gms.metadata.MODULE_DEPENDENCIES
-ADDED from [:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:25:17-94
+ADDED from [:image_picker_android] D:\Flutter_Apps\Abit\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:25:17-94
 	android:name
-		ADDED from [:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:25:25-91
+		ADDED from [:image_picker_android] D:\Flutter_Apps\Abit\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:25:25-91
 meta-data#photopicker_activity:0:required
-ADDED from [:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:28:13-30:36
+ADDED from [:image_picker_android] D:\Flutter_Apps\Abit\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:28:13-30:36
 	android:value
-		ADDED from [:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:30:17-33
+		ADDED from [:image_picker_android] D:\Flutter_Apps\Abit\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:30:17-33
 	android:name
-		ADDED from [:image_picker_android] D:\Flutter_Apps\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:29:17-63
+		ADDED from [:image_picker_android] D:\Flutter_Apps\Abit\sleep_prediction\build\image_picker_android\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:29:17-63
 activity#com.google.android.gms.common.api.GoogleApiActivity
 ADDED from [com.google.android.gms:play-services-base:18.3.0] C:\Users\quona\.gradle\caches\8.10.2\transforms\9db9b81a577112600e8d2ee7b5450923\transformed\jetified-play-services-base-18.3.0\AndroidManifest.xml:20:9-22:45
 	android:exported

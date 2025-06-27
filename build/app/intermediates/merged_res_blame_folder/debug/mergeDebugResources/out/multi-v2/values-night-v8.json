@@ -4,7 +4,7 @@
             "outputFile": "com.sleepmodel.sleep_prediction.app-mergeDebugResources-49:/values-night-v8/values-night-v8.xml",
             "map": [
                 {
-                    "source": "D:\\Flutter_Apps\\sleep_prediction\\android\\app\\src\\main\\res\\values-night\\styles.xml",
+                    "source": "D:\\Flutter_Apps\\Abit\\sleep_prediction\\android\\app\\src\\main\\res\\values-night\\styles.xml",
                     "from": {
                         "startLines": "3,14",
                         "startColumns": "4,4",
