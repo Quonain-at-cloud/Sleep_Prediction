@@ -47,8 +47,21 @@ exports.predict = async (req, res) => {
     // Map the input data to the format expected by our service
     const mlInputData = mapSleepDataToMLInput(sleepData, environmentalData, dietaryData);
 
-    // Get prediction using our local Node.js service
-    const predictionResult = sleepPredictionService.analyzeSleepData(mlInputData);
+    // Get user's name from the request body, user object, or use 'there' as fallback
+    const userName = req.body.userName || req.user?.name || req.user?.username || 'there';
+    
+    // Log the username being used for debugging
+    console.log('Using username for prediction:', userName);
+    
+    // Get prediction using our local Node.js service with username
+    const predictionResult = sleepPredictionService.analyzeSleepData(mlInputData, userName);
+    
+    // Log the prediction result for debugging
+    console.log('Prediction result:', JSON.stringify({
+      hasRecommendations: !!predictionResult.recommendations,
+      recommendationCount: predictionResult.recommendations?.length || 0,
+      hasDetailedAnalysis: !!predictionResult.detailedAnalysis
+    }, null, 2));
 
     // Save prediction to DB
     const predictionDoc = new Prediction({
@@ -441,7 +454,11 @@ exports.getPredictionWithRecommendations = async (req, res) => {
       latestData.dietaryHabits || {}
     );
 
-    // Call the ML service
+    // Get user's name from the request or user object
+    const userName = req.user?.name || req.user?.username || 'there';
+    
+    // Call the ML service with username
+    mlInputData.userName = userName; // Add username to the input data
     const response = await axios.post('http://localhost:5000/predict', mlInputData);
     console.log('DEBUG: ML Service Raw Response Data:', JSON.stringify(response.data, null, 2));
 

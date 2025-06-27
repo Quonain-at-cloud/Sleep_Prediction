@@ -675,9 +675,17 @@ class SleepPredictionService {
             analysisParts.push("Your diet is consistent but limited in variety, which might impact overall nutrition for sleep");
         }
 
-        // Join analysis parts
-        const detailedAnalysis = "We've analyzed your sleep data and found several factors that may affect your rest. " + analysisParts.join(". ") + ".";
-        return detailedAnalysis;
+        // Format analysis with first line as regular text and rest as bullet points
+        if (analysisParts.length === 0) {
+            return "We've analyzed your sleep data and everything looks good!";
+        }
+        
+        const firstLine = "We've analyzed your sleep data and found several factors that may affect your rest.";
+        const bulletPoints = analysisParts.map(point => 
+            point.endsWith('.') ? `• ${point}` : `• ${point}.`
+        ).join('\n');
+        
+        return `${firstLine}\n${bulletPoints}`;
     }
 
     // Predict sleep interruptions
@@ -748,6 +756,7 @@ class SleepPredictionService {
         const recommendations = [];
         const positiveReinforcements = [];
         const analysisParts = [];
+        const personalizedGreeting = `Dear ${userName || 'User'}, here are some personalized recommendations to help improve your sleep quality:`;
 
         // 1. Sleep Schedule Consistency
         const weekdayBedtime = (this.safeGet(data, 'Weekday Bedtime Hour') || 0) + (this.safeGet(data, 'Weekday Bedtime Minute') || 0) / 60;
@@ -979,13 +988,16 @@ class SleepPredictionService {
         }
 
         // Keep all recommendations but consolidate similar portion size ones
-        let actionableRecommendations = [...recommendations];
+        let actionableRecommendations = [];
+        
+        // First, add all regular recommendations
+        actionableRecommendations.push(...recommendations);
         
         // Check if there are multiple portion size recommendations
-        const portionRecs = recommendations.filter(rec => rec.includes('portion'));
+        const portionRecs = recommendations.filter(rec => rec && rec.includes('portion'));
         if (portionRecs.length > 1) {
             // Remove individual portion recommendations
-            actionableRecommendations = actionableRecommendations.filter(rec => !rec.includes('portion'));
+            actionableRecommendations = actionableRecommendations.filter(rec => !rec || !rec.includes('portion'));
             // Add a consolidated portion recommendation
             actionableRecommendations.push('Consider adjusting your meal portion sizes for better digestion and energy levels.');
         }
@@ -1019,13 +1031,71 @@ class SleepPredictionService {
             }
         });
         
-        // Combine all analysis parts
-        const finalAnalysis = [...detailedAnalysis, ...mealAnalyses];
+        // Combine all recommendations and remove duplicates while preserving order
+        const allRecommendations = [];
+        const seen = new Set();
+        
+        // Add regular recommendations first
+        for (const rec of recommendations) {
+            if (rec && !seen.has(rec)) {
+                seen.add(rec);
+                allRecommendations.push(rec);
+            }
+        }
+        
+        // Add actionable recommendations (from meal analysis, etc.)
+        for (const rec of actionableRecommendations) {
+            if (rec && !seen.has(rec)) {
+                seen.add(rec);
+                allRecommendations.push(rec);
+            }
+        }
+        
+        // Process meal analyses if any
+        const processMealAnalysis = (meal) => {
+            if (!meal.analysis) return;
+            
+            if (Array.isArray(meal.analysis)) {
+                meal.analysis.forEach(analysis => {
+                    if (analysis && !seen.has(analysis)) {
+                        seen.add(analysis);
+                        allRecommendations.push(analysis);
+                    }
+                });
+            } else if (meal.analysis && !seen.has(meal.analysis)) {
+                seen.add(meal.analysis);
+                allRecommendations.push(meal.analysis);
+            }
+        };
+        
+        // Process each meal's analysis
+        meals.forEach(processMealAnalysis);
+        
+        // Filter out any empty or undefined recommendations
+        const validRecommendations = allRecommendations.filter(rec => {
+            return rec && typeof rec === 'string' && rec.trim().length > 0;
+        });
+        
+        // Format with bullet points and add personalized greeting
+        const formattedRecommendations = [
+            `Dear ${userName || 'User'}, here are some personalized recommendations to help improve your sleep quality:`,
+            ...validRecommendations.map(rec => `• ${rec.trim()}`)
+        ];
+        
+        // Remove any duplicates that might have been introduced during formatting
+        const uniqueRecommendations = [];
+        const seenFormatted = new Set();
+        
+        for (const rec of formattedRecommendations) {
+            const cleanRec = rec.replace(/^•\s*/, '').trim();
+            if (cleanRec && !seenFormatted.has(cleanRec)) {
+                seenFormatted.add(cleanRec);
+                uniqueRecommendations.push(rec);
+            }
+        }
         
         return {
-            prediction: this.generatePredictionSummary(this.calculatePredictionScore(data)),
-            detailedAnalysis: finalAnalysis,
-            recommendations: actionableRecommendations,
+            recommendations: uniqueRecommendations,
             positiveReinforcements: positiveReinforcements
         };
     }
