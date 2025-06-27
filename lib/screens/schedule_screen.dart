@@ -5,8 +5,10 @@ import '../widgets/custom_bottom_navigation.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../providers/schedule_provider.dart';
+import '../providers/notification_provider.dart';
 import '../models/schedule_model.dart';
 import '../services/auth_service.dart';
+import '../utils/notification_utils.dart';
 
 class ScheduleScreen extends StatefulWidget {
   const ScheduleScreen({Key? key}) : super(key: key);
@@ -414,7 +416,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                       ),
                                       child: Row(
                                         children: [
-                                          Icon(item.uiIcon, color: Colors.black54, size: 24),
+                                          Icon(notificationIcon(item.type ?? item.label), color: Colors.black54, size: 24),
                                           const SizedBox(width: 12),
                                           Expanded(
                                             child: Column(

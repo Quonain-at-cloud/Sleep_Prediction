@@ -129,7 +129,7 @@
                     }
                 },
                 {
-                    "source": "D:\\Flutter_Apps\\sleep_prediction\\android\\app\\src\\main\\res\\values\\styles.xml",
+                    "source": "D:\\Flutter_Apps\\Abit\\sleep_prediction\\android\\app\\src\\main\\res\\values\\styles.xml",
                     "from": {
                         "startLines": "3,14",
                         "startColumns": "4,4",
@@ -237,23 +237,6 @@
                     }
                 },
                 {
-                    "source": "D:\\Flutter_Apps\\sleep_prediction\\build\\app\\generated\\res\\processDebugGoogleServices\\values\\values.xml",
-                    "from": {
-                        "startLines": "2,3,4,5,6,7",
-                        "startColumns": "4,4,4,4,4,4",
-                        "startOffsets": "55,137,241,350,470,584",
-                        "endColumns": "81,103,108,119,113,82",
-                        "endOffsets": "132,236,345,465,579,662"
-                    },
-                    "to": {
-                        "startLines": "426,427,428,429,430,435",
-                        "startColumns": "4,4,4,4,4,4",
-                        "startOffsets": "27074,27156,27260,27369,27489,27787",
-                        "endColumns": "81,103,108,119,113,82",
-                        "endOffsets": "27151,27255,27364,27484,27598,27865"
-                    }
-                },
-                {
                     "source": "C:\\Users\\quona\\.gradle\\caches\\8.10.2\\transforms\\58a0920e123e93dd6aa702d27ab7530e\\transformed\\coordinatorlayout-1.0.0\\res\\values\\values.xml",
                     "from": {
                         "startLines": "2,102,3,13",
@@ -325,6 +308,23 @@
                         "startOffsets": "21565",
                         "endColumns": "49",
                         "endOffsets": "21610"
+                    }
+                },
+                {
+                    "source": "D:\\Flutter_Apps\\Abit\\sleep_prediction\\build\\app\\generated\\res\\processDebugGoogleServices\\values\\values.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7",
+                        "startColumns": "4,4,4,4,4,4",
+                        "startOffsets": "55,137,241,350,470,584",
+                        "endColumns": "81,103,108,119,113,82",
+                        "endOffsets": "132,236,345,465,579,662"
+                    },
+                    "to": {
+                        "startLines": "426,427,428,429,430,435",
+                        "startColumns": "4,4,4,4,4,4",
+                        "startOffsets": "27074,27156,27260,27369,27489,27787",
+                        "endColumns": "81,103,108,119,113,82",
+                        "endOffsets": "27151,27255,27364,27484,27598,27865"
                     }
                 },
                 {

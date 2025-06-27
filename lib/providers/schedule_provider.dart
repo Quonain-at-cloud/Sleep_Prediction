@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../models/schedule_model.dart';
+import '../models/notification_model.dart';
 import '../services/auth_service.dart';
 import '../services/schedule_service.dart';
 import '../services/notification_service.dart';
 import '../services/service_locator.dart';
+import '../providers/notification_provider.dart';
 
 class ScheduleProvider extends ChangeNotifier {
   final ScheduleService _scheduleService;
@@ -70,26 +72,58 @@ class ScheduleProvider extends ChangeNotifier {
   }
 
   Future<void> addSchedule(ScheduleModel schedule) async {
-    // Immediate notification to inform user
-    await _notificationService.show(
-      title: 'Schedule Created',
-      body: '${schedule.label} scheduled for ${_formatTime12(_combineDateAndTime(schedule))}',
-    );
     try {
-      final created = await _scheduleService.addSchedule(schedule);
-      // Schedule future notification
-      final scheduledDate = _combineDateAndTime(created);
-      await _notificationService.scheduleNotification(
-        stringId: created.id,
-        title: 'It\'s time!',
-        body: 'It\'s time for ${created.label}',
-        scheduledDate: scheduledDate,
+      final userId = await _authService.getCurrentUserId();
+      if (userId == null) {
+        _error = 'User not logged in';
+        return;
+      }
+
+      // Create notification for schedule creation
+      final notification = NotificationModel(
+        title: 'Schedule Created',
+        message: '${schedule.label} scheduled for ${_formatTime12(_combineDateAndTime(schedule))}',
+        timestamp: DateTime.now(),
+        userId: userId,
+        type: 'created',
+        category: schedule.type ?? schedule.label.toLowerCase(),
       );
+
+      // Save notification to notification provider
+      try {
+        final notificationProvider = serviceLocator<NotificationProvider>();
+        await notificationProvider.addNotificationModel(notification);
+      } catch (e) {
+        print('Failed to save notification: $e');
+      }
+
+      // Show OS notification
+      await _notificationService.show(
+        title: notification.title,
+        body: notification.message,
+      );
+      
+      final created = await _scheduleService.addSchedule(schedule);
+      
+      // Schedule future notification (reminder) only if not completed
+      final scheduledDate = _combineDateAndTime(created);
+      if (!created.checked && scheduledDate.isAfter(DateTime.now())) {
+        await _notificationService.scheduleNotification(
+          stringId: created.id,
+          title: created.label, // Use schedule title for reminder
+          body: 'It\'s time for ${created.label}',
+          scheduledDate: scheduledDate,
+        );
+        // Do NOT save reminder notification to provider here; let backend or background fetch handle it at the right time
+      }
+      
       _schedules.add(created);
+      _error = null;
       notifyListeners();
     } catch (e) {
       _error = e.toString();
       notifyListeners();
+      rethrow;
     }
   }
 
@@ -97,25 +131,68 @@ class ScheduleProvider extends ChangeNotifier {
     final oldIndex = _schedules.indexWhere((s) => s.id == id);
     // Keep reference to cancel previous notification later
     final oldSchedule = oldIndex != -1 ? _schedules[oldIndex] : null;
+    
     try {
+      final userId = await _authService.getCurrentUserId();
+      if (userId == null) {
+        _error = 'User not logged in';
+        return;
+      }
+
       final updated = await _scheduleService.updateSchedule(id, data);
+      
       // Cancel previous scheduled notification
       if (oldSchedule != null) {
         await _notificationService.cancelNotification(oldSchedule.id);
       }
-      // Immediate notification about update
-      await _notificationService.show(
+
+      // If this is a completion update, do NOT show 'Schedule Updated' notification
+      if (data['completed'] == true) {
+        // Already handled by completeSchedule
+        final index = _schedules.indexWhere((s) => s.id == id);
+        if (index != -1) {
+          _schedules[index] = updated;
+          notifyListeners();
+        }
+        return;
+      }
+
+      // Create notification for schedule update
+      final notification = NotificationModel(
         title: 'Schedule Updated',
-        body: '${updated.label} updated to ${_formatTime12(_combineDateAndTime(updated))}',
+        message: '${updated.label} updated to ${_formatTime12(_combineDateAndTime(updated))}',
+        timestamp: DateTime.now(),
+        userId: userId,
+        type: 'updated',
+        category: updated.type ?? updated.label.toLowerCase(),
       );
-      // Schedule new notification
+
+      // Save notification to notification provider
+      try {
+        final notificationProvider = serviceLocator<NotificationProvider>();
+        await notificationProvider.addNotificationModel(notification);
+      } catch (e) {
+        print('Failed to save notification: $e');
+      }
+
+      // Show OS notification
+      await _notificationService.show(
+        title: notification.title,
+        body: notification.message,
+      );
+
+      // Schedule new notification (reminder) only if not completed
       final scheduledDate = _combineDateAndTime(updated);
-      await _notificationService.scheduleNotification(
-        stringId: updated.id,
-        title: 'It\'s time!',
-        body: 'It\'s time for ${updated.label}',
-        scheduledDate: scheduledDate,
-      );
+      if (!updated.checked && scheduledDate.isAfter(DateTime.now())) {
+        await _notificationService.scheduleNotification(
+          stringId: updated.id,
+          title: updated.label, // Use schedule title for reminder
+          body: 'It\'s time for ${updated.label}',
+          scheduledDate: scheduledDate,
+        );
+        // Do NOT save reminder notification to provider here; let backend or background fetch handle it at the right time
+      }
+
       final index = _schedules.indexWhere((s) => s.id == id);
       if (index != -1) {
         _schedules[index] = updated;
@@ -128,20 +205,82 @@ class ScheduleProvider extends ChangeNotifier {
   }
 
   Future<void> deleteSchedule(String id) async {
-    // Cancel any pending notification first
-    await _notificationService.cancelNotification(id);
-    // Immediate notification about deletion
-    await _notificationService.show(
-      title: 'Schedule Deleted',
-      body: 'A schedule has been deleted',
-    );
     try {
+      final userId = await _authService.getCurrentUserId();
+      if (userId == null) {
+        _error = 'User not logged in';
+        return;
+      }
+
+      // Get schedule details before deletion for notification
+      final scheduleToDelete = _schedules.firstWhere((s) => s.id == id);
+      
+      // Cancel any pending notification first
+      await _notificationService.cancelNotification(id);
+
+      // Create notification for schedule deletion
+      final notification = NotificationModel(
+        title: 'Schedule Deleted',
+        message: '${scheduleToDelete.label} has been deleted',
+        timestamp: DateTime.now(),
+        userId: userId,
+        type: 'deleted',
+        category: scheduleToDelete.type ?? scheduleToDelete.label.toLowerCase(),
+      );
+
+      // Save notification to notification provider
+      try {
+        final notificationProvider = serviceLocator<NotificationProvider>();
+        await notificationProvider.addNotificationModel(notification);
+      } catch (e) {
+        print('Failed to save notification: $e');
+      }
+
+      // Show OS notification
+      await _notificationService.show(
+        title: notification.title,
+        body: notification.message,
+      );
+
       await _scheduleService.deleteSchedule(id);
       _schedules.removeWhere((s) => s.id == id);
       notifyListeners();
     } catch (e) {
       _error = e.toString();
       notifyListeners();
+    }
+  }
+
+  // New: Mark schedule as completed (tick)
+  Future<void> completeSchedule(ScheduleModel schedule) async {
+    try {
+      final userId = await _authService.getCurrentUserId();
+      if (userId == null) return;
+      // Mark as completed in backend
+      await _scheduleService.updateSchedule(schedule.id, {'completed': true});
+      // Cancel any pending reminder notification for this schedule
+      await _notificationService.cancelNotification(schedule.id);
+      // Create notification for completion
+      final notification = NotificationModel(
+        title: 'Schedule Completed',
+        message: '${schedule.label} completed successfully',
+        timestamp: DateTime.now(),
+        userId: userId,
+        type: 'completed',
+        category: schedule.type ?? schedule.label.toLowerCase(),
+      );
+      try {
+        final notificationProvider = serviceLocator<NotificationProvider>();
+        await notificationProvider.addNotificationModel(notification);
+      } catch (e) {
+        print('Failed to save completion notification: $e');
+      }
+      await _notificationService.show(
+        title: notification.title,
+        body: notification.message,
+      );
+    } catch (e) {
+      print('Error completing schedule: $e');
     }
   }
 
